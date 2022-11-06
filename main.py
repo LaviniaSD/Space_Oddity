@@ -51,6 +51,33 @@ class Player(pygame.sprite.Sprite):
         self.rect.bottom = HEIGHT -10
         self.x_speed = 0
         self.y_speed = 0
+        
+    #Atualiza a nave de acordo com os comandos do jogador   
+    def update(self):
+        self.x_speed = 0
+        self.y_speed = 0
+        #Reage a interações do usuário
+        keystate = pygame.key.get_pressed()
+        if keystate[pygame.K_LEFT]:
+            self.x_speed = -8
+        if keystate[pygame.K_RIGHT]:
+            self.x_speed = 8
+        if keystate[pygame.K_UP]:
+            self.y_speed = -8
+        if keystate[pygame.K_DOWN]:
+            self.y_speed = 8
+        self.rect.x += self.x_speed
+        self.rect.y += self.y_speed
+        
+        #Não deixa que o jogador ultrapasse os limites da tela
+        if self.rect.right > WIDTH:
+            self.rect.right = WIDTH
+        if self.rect.left < 0:
+            self.rect.left = 0
+        if self.rect.top < 0:
+            self.rect.top = 0
+        if self.rect.bottom > HEIGHT:
+            self.rect.bottom = HEIGHT
     
         
         
