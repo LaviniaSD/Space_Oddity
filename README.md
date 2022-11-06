@@ -1,47 +1,46 @@
-################################################################# Trabalho LP - Space oddity  #######################################################################
+<h1>Trabalho LP</h1>
 
-Jogo de nave
+<h3>Jogo de nave</h3>
 
-Menu:
-*Fundo
-*Texto
-*Música
-*Maior score
-*Botão de iniciar
+<h3>Menu:</h3>
 
-Jogo:
-*Background movendo-se verticalmente
-*Nave na parte inferior da tela (movimento livre)
-*Função de atirar (tab)
-*Score (Asteroides destruídos)
-*Vidas da aeronave
-*Asteroides caindo (cada asteroide tem uma "vida" própria, que só o sistema sabe)
-*Velocidade do asteroide aumenta com o tempo e padrões mudam
-*Música de fundo
-*Som de tiro
-*Som de destruição do asteroide
+- [ ] Fundo
+- [ ] Texto
+- [ ] Música
+- [ ] Maior score
+- [ ] Botão de iniciar
+
+<h3>Jogo:</h3>
+
+- [ ] Background movendo-se verticalmente
+- [ ] Nave na parte inferior da tela (movimento livre)
+- [ ] Função de atirar (tab)
+- [ ] Score (Asteroides destruídos)
+- [ ] Vidas da aeronave
+- [ ] Asteroides caindo (cada asteroide tem uma "vida" própria, que só o sistema sabe)
+- [ ] Velocidade do asteroide aumenta com o tempo e padrões mudam
+- [ ] Música de fundo
+- [ ] Som de tiro
+- [ ] Som de destruição do asteroide
 
 
-4 integrantes:
-*Abner
-*Almir
-*Lavínia
-*
+<h3>Diagrama UML (html):<h3> 
 
-Diagrama UML (html): 
-*3 diagramas de caso de uso
-- Não colide com nada 
-- Colide com asteroide
-- Colide com parede 
+<h4>3 diagramas de caso de uso</h4>
 
-*3 diagramas de atividade
-- Movimentar nave
-- Atirar 
-- Encerrar jogo (?)
+- [ ] Não colide com nada 
+- [ ] Colide com asteroide
+- [ ] Colide com parede 
 
-*diagrama de classes (só das classes que nós elaboramos, exceto se nossa classe extender alguma classe já existente no pygame).
--Nave
--Asteroide
+<h4>3 diagramas de atividade</h4>
+
+- [ ] Movimentar nave
+- [ ] Atirar 
+- [ ] Encerrar jogo (?)
+
+- [ ] diagrama de classes (só das classes que nós elaboramos, exceto se nossa classe extender alguma classe já existente no pygame). 
+* [Nave]
+* [Asteroide]
 
 *documentação - manual de uso do jogo
 
@@ -52,12 +51,15 @@ Requisitos técnicos obrigatórios:
 *Tratamento de texto (Menu, pontuação,...)
 *Tratamento de imagens (Sprites,Background,...)
 
-Tipo de jogos:
-*Text Adventure games
-*Graphic Adventure // Visual Novels
-*Plataformer
 
-*Comentado
-*Documentado
-*Tratamento de exceção
-*Teste (unittest)
+- [ ] Comentado
+- [ ] Documentado
+- [ ] Tratamento de exceção
+- [ ] Teste (unittest)
+
+4 integrantes:
+
+* Abner
+* Almir
+* Lavínia
+* Gustavo
