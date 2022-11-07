@@ -13,7 +13,7 @@
 <h3>Jogo:</h3>
 
 - [ ] Background movendo-se verticalmente
-- [ ] Nave na parte inferior da tela (movimento livre)
+- [X] Nave na parte inferior da tela (movimento livre)
 - [ ] Função de atirar (tab)
 - [ ] Score (Asteroides destruídos)
 - [ ] Vidas da aeronave
