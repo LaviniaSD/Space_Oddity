@@ -35,6 +35,9 @@ clock = pygame.time.Clock()
 #Crie um grupo para os sprites
 all_sprites = pygame.sprite.Group()
 
+#Crie um grupo para os asteroides
+asteroids_sprites = pygame.sprite.Group()
+
 #Cria a classe para o jogador
 class Player(pygame.sprite.Sprite):
     #Característimas iniciais da classe quando ela é iniciada
@@ -112,13 +115,15 @@ class Asteroids(pygame.sprite.Sprite):
             
 #Atribui a classe player a uma variável
 player = Player()
-asteroids= Asteroids()
 
 #Adiciona player aos grupo de sprites
 all_sprites.add(player)
-all_sprites.add(asteroids)
 
-
+#Adiciona 5 asteroides na tela por vez
+for i in range (5):
+    asteroids= Asteroids()
+    asteroids_sprites.add(asteroids)
+    all_sprites.add(asteroids)
 
 #Loop para o jogo
 
