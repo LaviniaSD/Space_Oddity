@@ -79,13 +79,46 @@ class Player(pygame.sprite.Sprite):
         if self.rect.bottom > HEIGHT:
             self.rect.bottom = HEIGHT
     
+#Cria a classe para os asteroides 
+class Asteroids(pygame.sprite.Sprite):
+    #Característimas iniciais da classe quando ela é iniciada
+    def __init__(self):
+        #Adiciona uma imagem
+        pygame.sprite.Sprite.__init__(self)
+        self.image = pygame.image.load(os.path.join(img_folder,"asteroid.png")).convert()
+        self.image.set_colorkey((0,0,0))
+        #Orienta a posição inicial do jogador
+        self.rect = self.image.get_rect()
+        self.rect.x = random.randrange(WIDTH - self.rect.width)
+        self.rect.y = random.randrange(-100,-40)
         
+        #Define uma velocidade aleatória para cada asteroide
+        self.x_speed = random.randrange(-5,5)
+        self.y_speed = random.randrange(1,10)
+    
+    #Muda a posição do asteroide
+    def update(self):
+        self.rect.x += self.x_speed 
+        self.rect.y += self.y_speed 
         
+        #Caso o asteroide ultrapasse as bordas, crie outro
+        if self.rect.top > HEIGHT + 10 or self.rect.left < -10 or self.rect.right > WIDTH + 10:
+            self.x_speed = random.randrange(-5,5)
+            self.y_speed = random.randrange(1,10)
+            self.rect.x = random.randrange(WIDTH - self.rect.width)
+            self.rect.y = random.randrange(-100,-40)
+            self.y_speed = random.randrange(1,10)  
+        
+            
 #Atribui a classe player a uma variável
 player = Player()
+asteroids= Asteroids()
 
 #Adiciona player aos grupo de sprites
 all_sprites.add(player)
+all_sprites.add(asteroids)
+
+
 
 #Loop para o jogo
 
