@@ -207,9 +207,12 @@ while running:
     hits = pygame.sprite.groupcollide(asteroids, bullets, True, True)
     for hit in hits:
         score += 50
+        explosion_sound = pygame.mixer.Sound(os.path.join(sound_folder,"Explosion7.wav"))
+        explosion_sound.play()
         new_asteroid = Asteroids()
         all_sprites.add(new_asteroid)
         asteroids.add(new_asteroid)
+        
     
     hits = pygame.sprite.spritecollide(player, asteroids, False,pygame.sprite.collide_circle)
     if hits:
