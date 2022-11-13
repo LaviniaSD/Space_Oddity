@@ -36,7 +36,7 @@ clock = pygame.time.Clock()
 background =  pygame.image.load(os.path.join(img_folder,"space.png")).convert()
 background_rect = background.get_rect()
 
-#Crie um grupo para os sprites
+#Crie um grupo para todos os sprites
 all_sprites = pygame.sprite.Group()
 
 #Crie um grupo para os asteroides
@@ -44,6 +44,19 @@ asteroids = pygame.sprite.Group()
 
 #Crie um grupo para as balas
 bullets = pygame.sprite.Group()
+
+#Crie uam função para a fonte
+font_name = pygame.font.match_font("arial")
+def draw_text(surface,text,size,x,y):
+    font = pygame.font.Font(font_name,size)
+    text_surface = font.render(text,False,(255,255,255))
+    text_rect = text_surface.get_rect()
+    text_rect.midtop = (x,y)
+    surface.blit(text_surface,text_rect)
+
+
+
+
 
 #Cria a classe para o jogador
 class Player(pygame.sprite.Sprite):
@@ -107,7 +120,7 @@ class Asteroids(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.radius = 30
         self.rect.x = random.randrange(WIDTH - self.rect.width)
-        self.rect.y = random.randrange(-100,-40)
+        self.rect.y = random.randrange(-40,-15)
         
         #Define uma velocidade aleatória para cada asteroide
         self.x_speed = random.randrange(-5,5)
@@ -166,6 +179,7 @@ for i in range (5):
 
 running = True
 
+score = 0
 while running:
     #Faça o jogo funcionar com a quantidade de frames por segundo estabelecidas
     clock.tick(FPS)
@@ -184,8 +198,11 @@ while running:
     #Atualiza os sprites
     all_sprites.update()
     
+    
+    
     hits = pygame.sprite.groupcollide(asteroids, bullets, True, True)
     for hit in hits:
+        score += 50
         new_asteroid = Asteroids()
         all_sprites.add(new_asteroid)
         asteroids.add(new_asteroid)
@@ -208,6 +225,7 @@ while running:
     #Desenha os sprites na tela
     all_sprites.draw(screen)
     
+    draw_text(screen,f'score: {str(score)}',20,WIDTH/2,10)
 
     #Atualiza o jogo
     pygame.display.update()
