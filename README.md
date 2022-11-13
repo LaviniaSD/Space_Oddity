@@ -14,14 +14,14 @@
 
 - [ ] Background movendo-se verticalmente
 - [X] Nave na parte inferior da tela (movimento livre)
-- [ ] Função de atirar (tab)
-- [ ] Score (Asteroides destruídos)
+- [x] Função de atirar (tab)
+- [x] Score (Asteroides destruídos)
 - [ ] Vidas da aeronave
 - [ ] Asteroides caindo (cada asteroide tem uma "vida" própria, que só o sistema sabe)
 - [ ] Velocidade do asteroide aumenta com o tempo e padrões mudam
-- [ ] Música de fundo
-- [ ] Som de tiro
-- [ ] Som de destruição do asteroide
+- [x] Música de fundo
+- [x] Som de tiro
+- [x] Som de destruição do asteroide
 
 
 <h3>Diagrama UML (html):<h3> 
