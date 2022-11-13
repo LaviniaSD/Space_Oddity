@@ -1,7 +1,7 @@
 '''Módulo Principal do jogo
 Nesse módulo será executado o loop principal do jogo
 '''
-
+#Música tema de FoxSynergy
 #Importe as bibliotecas necessárias
 import pygame
 import random
@@ -10,7 +10,7 @@ import os
 #Defina a localização das pastas necessárias
 game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, "img")
-
+sound_folder = os.path.join(game_folder, "sounds")
 
 #Dimensões da tela
 WIDTH = 800
@@ -36,6 +36,10 @@ clock = pygame.time.Clock()
 background =  pygame.image.load(os.path.join(img_folder,"space.png")).convert()
 background_rect = background.get_rect()
 
+#Som de background
+pygame.mixer.music.load(os.path.join(sound_folder,"som1.mp3"))
+#pygame.mixer.music.set_volume(0.5)
+
 #Crie um grupo para todos os sprites
 all_sprites = pygame.sprite.Group()
 
@@ -53,10 +57,6 @@ def draw_text(surface,text,size,x,y):
     text_rect = text_surface.get_rect()
     text_rect.midtop = (x,y)
     surface.blit(text_surface,text_rect)
-
-
-
-
 
 #Cria a classe para o jogador
 class Player(pygame.sprite.Sprite):
@@ -103,9 +103,12 @@ class Player(pygame.sprite.Sprite):
         if self.rect.bottom > HEIGHT:
             self.rect.bottom = HEIGHT
     def shoot(self):
+        shoot_sound = pygame.mixer.Sound(os.path.join(sound_folder,"Laser_Shoot4.wav"))
+        shoot_sound.set_volume(0.5)
         bullet = Bullet(self.rect.centerx,self.rect.top)
         all_sprites.add(bullet)
         bullets.add(bullet)
+        shoot_sound.play()
     
 #Cria a classe para os asteroides 
 class Asteroids(pygame.sprite.Sprite):
@@ -180,6 +183,7 @@ for i in range (5):
 running = True
 
 score = 0
+pygame.mixer.music.play(loops=-1)
 while running:
     #Faça o jogo funcionar com a quantidade de frames por segundo estabelecidas
     clock.tick(FPS)
