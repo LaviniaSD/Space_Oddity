@@ -32,6 +32,10 @@ pygame.display.set_caption("Nome do jogo")
 #Relógio para controlar o tempo das ações no jogo
 clock = pygame.time.Clock()
 
+#Crie um background
+background =  pygame.image.load(os.path.join(img_folder,"space.png")).convert()
+background_rect = background.get_rect()
+
 #Crie um grupo para os sprites
 all_sprites = pygame.sprite.Group()
 
@@ -53,6 +57,7 @@ class Player(pygame.sprite.Sprite):
 
         #Orienta a posição inicial do jogador
         self.rect = self.image.get_rect()
+        self.radius = 28
         self.rect.centerx = WIDTH/2
         self.rect.bottom = HEIGHT -10
         self.x_speed = 0
@@ -96,9 +101,11 @@ class Asteroids(pygame.sprite.Sprite):
         #Adiciona uma imagem
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(os.path.join(img_folder,"asteroid.png")).convert()
+        self.image = pygame.transform.scale(self.image, (64, 64))
         self.image.set_colorkey((0,0,0))
         #Orienta a posição inicial do jogador
         self.rect = self.image.get_rect()
+        self.radius = 30
         self.rect.x = random.randrange(WIDTH - self.rect.width)
         self.rect.y = random.randrange(-100,-40)
         
@@ -125,11 +132,10 @@ class Bullet(pygame.sprite.Sprite):
         #Adiciona uma imagem
         pygame.sprite.Sprite.__init__(self)
         self.image = pygame.image.load(os.path.join(img_folder,"bullet.png")).convert()
+        self.image = pygame.transform.scale(self.image, (35, 35))
         self.image.set_colorkey((0,0,0))
-        self.size = self.image.get_size()
-        self.image = pygame.transform.scale(self.image, (int(self.size[0]/2), int(self.size[1]/2)))
         #Orienta a posição inicial do jogador
-        self.rect = self.image.get_rect()
+        self.rect = self.image.get_rect()       
         self.rect.bottom = y
         self.rect.centerx = x
         
@@ -184,12 +190,17 @@ while running:
         all_sprites.add(new_asteroid)
         asteroids.add(new_asteroid)
     
-    hits = pygame.sprite.spritecollide(player, asteroids, False)
+    hits = pygame.sprite.spritecollide(player, asteroids, False,pygame.sprite.collide_circle)
     if hits:
         running = False
+        
+    
     
     #Defina a imagem de fundo da tela
     screen.fill((0,0,0))
+    
+    #Adiciona a imagem de fundo
+    screen.blit(background,background_rect)
     
     #Atualize as imagens dos objetos quando ocorrerem mudanças
     pygame.display.flip()
