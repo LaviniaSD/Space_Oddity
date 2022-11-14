@@ -7,21 +7,23 @@
 - [ ] Fundo
 - [ ] Texto
 - [ ] Música
-- [ ] Maior score
+- [ ] Configurações (volume e dificuldade)
 - [ ] Botão de iniciar
+- [ ] Ranking 
 
 <h3>Jogo:</h3>
 
 - [ ] Background movendo-se verticalmente
-- [ ] Nave na parte inferior da tela (movimento livre)
-- [ ] Função de atirar (tab)
-- [ ] Score (Asteroides destruídos)
+- [X] Nave na parte inferior da tela (movimento livre)
+- [x] Função de atirar (tab)
+- [ ] Score (Asteroides destruídos e aliens mortos)
 - [ ] Vidas da aeronave
-- [ ] Asteroides caindo (cada asteroide tem uma "vida" própria, que só o sistema sabe)
-- [ ] Velocidade do asteroide aumenta com o tempo e padrões mudam
-- [ ] Música de fundo
-- [ ] Som de tiro
-- [ ] Som de destruição do asteroide
+- [X] Asteroides caindo 
+- [ ] Velocidade do asteroide aumenta com o nível e padrões mudam
+- [x] Música de fundo
+- [x] Som de tiro
+- [x] Som de destruição do asteroide
+- [ ] Aliens (com vidas)
 
 
 <h3>Diagrama UML (html):<h3> 
