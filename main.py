@@ -12,19 +12,21 @@ game_folder = os.path.dirname(__file__)
 img_folder = os.path.join(game_folder, "img")
 sound_folder = os.path.join(game_folder, "sounds")
 
-#Dimensões da tela
-WIDTH = 800
-HEIGHT = 600
-
-#Frames por segundo
-FPS = 30
-
 #Inicializando o pygame e o mixer de sons
 pygame.init()
 pygame.mixer.init()
 
+#Dimensões da tela
+display_info = pygame.display.Info()
+
+WIDTH = display_info.current_w
+HEIGHT = display_info.current_h
+
+#Frames por segundo
+FPS = 30
+
 #Crie a tela
-screen = pygame.display.set_mode((WIDTH,HEIGHT))
+screen = pygame.display.set_mode((WIDTH,HEIGHT), pygame.FULLSCREEN)
 
 #Crie o nome do jogo (exibido no superior da janela)
 pygame.display.set_caption("Nome do jogo")
