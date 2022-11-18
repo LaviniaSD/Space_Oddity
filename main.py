@@ -199,6 +199,8 @@ while running:
         elif event.type == pygame.KEYDOWN:
             if event.key == pygame.K_SPACE:
                 player.shoot()
+            elif event.key == pygame.K_ESCAPE:
+                running = False
             
             
     #Atualiza os sprites
