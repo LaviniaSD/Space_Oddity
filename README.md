@@ -4,60 +4,85 @@
 
 <h3>Menu:</h3>
 
-- [ ] Fundo
-- [ ] Texto
-- [ ] Música
-- [ ] Configurações (volume e dificuldade)
-- [ ] Botão de iniciar
-- [ ] Ranking 
+- [ ] Background
+- [ ] Tratamento de texto (Nome do jogo)
+- [ ] Sound Design & Sound Music (Música de fundo)
+- [ ] Botão Start - inicializa o jogo
+- [ ] Botão Quit - fecha o jogo
+- [ ] Botão Ranking - exibe o ranking atual
+- [ ] How to play
+
+OBS: Todos os botões são derivados de uma classe abstrata de botões, sendo que cada botão deve ter efeito sonoro.
+
 
 <h3>Jogo:</h3>
 
-- [ ] Background movendo-se verticalmente
-- [X] Nave na parte inferior da tela (movimento livre)
-- [x] Função de atirar (tab)
-- [ ] Score (Asteroides destruídos e aliens mortos)
-- [ ] Vidas da aeronave
-- [X] Asteroides caindo 
-- [ ] Velocidade do asteroide aumenta com o nível e padrões mudam
-- [x] Música de fundo
-- [x] Som de tiro
-- [x] Som de destruição do asteroide
-- [ ] Aliens (com vidas)
+- [ ] Background em movimentação
+- [ ] Música de Fundo
+
+<h3>Jogador:</h3>
+
+- [ ] Movimentação (4 direções, livre), velocidade
+- [ ] Life (1 life, morreu acabou o jogo)
+- [ ] Hitbox (derivada de uma classe hitbox)
+- [ ] Atirar (Tiros derivados de uma classe Bullet, com cadência e sprites próprios, inerentes ao jogador, dano próprio.
+)
+- [ ] Guardar Pontuação (Calculada pela pontuação dos inimigos que o jogador matou
+)
+
+<h3>Asteroides:</h3>
+
+- [ ] Movimentação Fixa
+- [ ] Spawn Controlado (gerado de forma randômica controlada, a cada x segundos conforme o tempo de jogo (quantidade de iterações))
+- [ ] Tamanhos de hitbox diferentes
+- [ ] Life
+- [ ] Pontuação conforme hitbox
+- [ ] Explodir e gerar asteroides menores
+
+<h3>Naves inimigas:</h3>
+
+- [ ] Movimentação Fixa
+- [ ] Spawn Controlado (gerado de forma randômica controlada, a cada x segundos conforme o tempo de jogo (quantidade de iterações))
+- [ ] Hitbox
+- [ ] Life
+- [ ] Pontuação conforme life da nave
+- [ ] Atira (Configurar cadência, velocidade e padrão de tiro por ângulo)
+
+<h3>Score:</h3>
+
+- [ ] Aumenta conforme o score de jogador
+- [ ] Exibido na tela como tratamento de texto 
+
+<h3>Tela de game over:</h3>
+
+- [ ] Escurecer a tela do jogo ("Pausada")
+- [ ] Botão Restart - Reiniciar o jogo
+- [ ] Botão Menu - Volta para o menu
+- [ ] Botão Registrar score - Diponível apenas para jogador no top 20. Caso o jogador não esteja no top 20 ele só possui a opção de sair.
 
 
 <h3>Diagrama UML (html):<h3> 
 
-<h4>3 diagramas de caso de uso</h4>
+<h4>3 Diagramas de caso de uso</h4>
 
-- [ ] Não colide com nada 
-- [ ] Colide com asteroide
-- [ ] Colide com parede 
-
-<h4>3 diagramas de atividade</h4>
-
-- [ ] Movimentar nave
-- [ ] Atirar 
-- [ ] Encerrar jogo (?)
-
-- [ ] diagrama de classes (só das classes que nós elaboramos, exceto se nossa classe extender alguma classe já existente no pygame). 
-* [Nave]
-* [Asteroide]
-
-*documentação - manual de uso do jogo
+- [ ] Pronto?
 
 
-Requisitos técnicos obrigatórios:
-*Efeito Sonoro
-*Tratamento de eventos (eventos que interrompem o fluxo normal). 
-*Tratamento de texto (Menu, pontuação,...)
-*Tratamento de imagens (Sprites,Background,...)
+<h4>3 Diagramas de atividade</h4>
 
+- [ ] Pronto?
+ 
 
-- [ ] Comentado
-- [ ] Documentado
-- [ ] Tratamento de exceção
-- [ ] Teste (unittest)
+<h4>Diagrama de classes</h4>
+(só das classes que nós elaboramos, exceto se nossa classe extender alguma classe já existente no pygame). 
+
+- [ ]  Pronto?
+
+<h3>Finalizações:</h3>
+
+- [ ] Testes 
+- [ ] Html com manual de uso do jogo
+
 
 4 integrantes:
 
