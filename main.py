@@ -1,6 +1,6 @@
 import sys
 sys.path.insert(0, './src')
 
-import space_oddity as SpaceOddity
+import space_oddity
 
-print(SpaceOddity.Player)
+space_oddity.run_game()
