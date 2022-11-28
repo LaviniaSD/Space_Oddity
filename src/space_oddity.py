@@ -61,12 +61,17 @@ def menu():
     
     global data, in_menu, firts
 
+    x_centered = WIDTH / 2
+    y_centered = HEIGHT / 2
+
     # Instancia os botões do menu
-    play_button = cso.Button(text="PLAY", x=300, y=270, width=200, height=25)
-    scores_button = cso.Button(text="SCORES", x=300, y=300, width=200, height=25)
-    intructions_button = cso.Button(text="INSTRUCTIONS", x=300, y=330, width=200, height=25)
-    exit_button = cso.Button(text="EXIT", x=300, y=360, width=200, height=25)
-    back_button = cso.Button(text="BACK TO GAME", x=300, y=390, width=200, height=25)
+    play_button = cso.Button(text="PLAY", x=x_centered, y=y_centered-60, width=200, height=25)
+    scores_button = cso.Button(text="SCORES", x=x_centered, y=y_centered-30, width=200, height=25)
+    intructions_button = cso.Button(text="INSTRUCTIONS", x=x_centered, y=y_centered, width=200, height=25)
+    exit_button = cso.Button(text="EXIT", x=x_centered, y=y_centered+30, width=200, height=25)
+    back_button = cso.Button(text="BACK TO GAME", x=x_centered, y=y_centered+60, width=200, height=25)
+
+    input_box = cso.InputTextBox(x_centered-300, y_centered, 140, 32)
 
     # Lê os dados dos high scores a partir do arquivo ".save/scores.txt"
     scores_filepath = os.path.join(save_folder, "scores.txt")
@@ -93,6 +98,9 @@ def menu():
         intructions_button.draw(screen, (0,0,0))
         exit_button.draw(screen, (0,0,0))
 
+        input_box.update()
+        input_box.draw(screen)
+
         # Caso o usuário estava jogando, desenha o botão de voltar ao jogo
         if is_playing:
             back_button.draw(screen, (0,0,0))
@@ -101,6 +109,8 @@ def menu():
         for event in pygame.event.get():
             # Recolhe a posição atual do mouse
             pos = pygame.mouse.get_pos()
+
+            input_box.handle_event(event)
  
             # Caso o usuário feche a janela
             if event.type == pygame.QUIT:
@@ -164,8 +174,6 @@ def run_game():
         asteroid = cso.Asteroids()
         asteroids.add(asteroid)
         all_sprites.add(asteroids)
-
-    # testButton = cso.Button(color=cso.WHITE, x=200, y=200, width=200, height=200, size=20, text="ABCASKLDASKLDNASD")
 
     # Loop para o jogo
 
