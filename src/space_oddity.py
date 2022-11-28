@@ -61,6 +61,9 @@ enemy_ships = pygame.sprite.Group()
 # Crie um grupo para as balas
 bullets = pygame.sprite.Group()
 
+# Crie um grupo para as balas dos inimigos
+enemies_bullets = pygame.sprite.Group()
+
 class Game():
 
     def __init__(self):
@@ -183,19 +186,17 @@ class Game():
             pygame.display.flip()
 
     def run_game(self):
-
         # Atribui a classe player a uma variável
         player = cso.Player()
-        hitbox = cso.Hitbox(player)
-
+        player.hitbox = cso.Hitbox(player)
         # Adiciona player aos grupo de sprites
-        all_sprites.add(player, hitbox)
-
-        #Cria uma marcação de tempo inicial para spwaning
-        start = pygame.time.get_ticks()
-        
+        all_sprites.add(player, player.hitbox)
+        # testButton = cso.Button(color=cso.WHITE, x=200, y=200, width=200, height=200, size=20, text="ABCASKLDASKLDNASD")
+        #Cria uma marcação de tempo inicial para spawning
+        start_asteroids = pygame.time.get_ticks()
+        start_enemies = pygame.time.get_ticks()
+       
         # Loop para o jogo
-
         running = True
         
         pygame.mixer.music.play(loops=-1)
@@ -203,7 +204,6 @@ class Game():
         while running:
             # Faça o jogo funcionar com a quantidade de frames por segundo estabelecidas
             clock.tick(FPS)
-
             # Faça o jogo reagir a eventos externos
             for event in pygame.event.get():
                 # Permita que o usuário saia do jogo
@@ -217,30 +217,22 @@ class Game():
                         # running = False
                         # mso.quit_game()
                         self.pause = self.paused()
-
             # Atualiza os sprites
             all_sprites.update()
             
-            #Spawna inimigos em intervalos de 3 e 4 segundos
-            now = pygame.time.get_ticks()
             
-            if now - start > 3000 and  now - start < 3200:
-                asteroid = cso.Asteroids()
-                asteroids.add(asteroid)
-                all_sprites.add(asteroids)
+            #spawna asteroides em intervalos de 3 segundos
+            now = pygame.time.get_ticks()
+            if now - start_asteroids > 3000 :
+                start_asteroids = now
+                mso.spawn_asteroids(asteroids,all_sprites)
         
-            if now - start > 4000:
-                start = now
-                enemy = cso.Enemy_ship()
-                
-                for i in range (100):
-                    enemy.shoot(10)
-                enemy.update()
-                
-                enemy_ships.add(enemy)
-                all_sprites.add(enemy)
-                enemy.update()
+            #spawna naves inimigas em intervalos de 4 segundos
+            if now - start_enemies > 4000:
+                start_enemies = now
+                mso.spawn_enemy_ships(enemy_ships,all_sprites)
 
+            #Cria casos de colisão entre balas do jogador e asteroides
             hits = pygame.sprite.groupcollide(asteroids, bullets, True, True)
             for hit in hits:
                 asteroid_score = hit.get_score()
@@ -252,27 +244,41 @@ class Game():
                 new_asteroid = cso.Asteroids()
                 all_sprites.add(new_asteroid)
                 asteroids.add(new_asteroid)
-
+                
+            #Cria casos de colisão entre balas do jogador e naves inimigas    
+            hits = pygame.sprite.groupcollide(enemy_ships,bullets, True, True)
+            for hit in hits:
+                enemy_score = hit.get_score()
+                player.set_score(enemy_score) 
+                
+                explosion_sound = pygame.mixer.Sound(
+                    os.path.join(sound_folder, "Explosion7.wav"))
+                explosion_sound.play()
+                
+            #Cria casos de colisão entre jogador e asteroides    
             hits = pygame.sprite.spritecollide(
-                hitbox, asteroids, False, pygame.sprite.collide_circle)
-
+                player.hitbox, asteroids, False, pygame.sprite.collide_circle)
             if hits:
                 running = False
-                self.game_over(player.get_score())
-                return "menu" # TODO unificar os métodos que retornam para o menu
+                
+            #Cria casos de colisão entre balas do inimigo e o jogador    
+            hits = pygame.sprite.spritecollide(
+                player.hitbox, enemies_bullets, False, pygame.sprite.collide_circle)
+            if hits:
+                running = False
+                
+            #Cria casos de colisão entre nave inimiga e o jogador    
+            hits = pygame.sprite.spritecollide(
+                player.hitbox, enemy_ships, False, pygame.sprite.collide_circle)
+            if hits:
+                running = False   
 
             keys_pressed = pygame.key.get_pressed()
 
             if keys_pressed[pygame.K_LSHIFT]:
-                    hitbox.set_visible(True)
+                player.hitbox.set_visible(True)
             elif not keys_pressed[pygame.K_LSHIFT]:
-                    hitbox.set_visible(False)
-
-                
-            hits = pygame.sprite.spritecollide(
-                hitbox, bullets, False, pygame.sprite.collide_circle)
-            if hits:
-                running = False
+                player.hitbox.set_visible(False)
 
 
             # Defina a imagem de fundo da tela
@@ -290,13 +296,12 @@ class Game():
             # Insere o score na tela
 
             #Adiciona a pontuação no topo da tela
-            #mso.draw_text(screen, f'score: {str(player.get_score())}', 40, WIDTH/2, 10)
-
+            mso.draw_text(screen, f'score: {str(player.get_score())}', 40, WIDTH/2, 10,(255,255,255))
             # Atualiza o jogo
             pygame.display.update()
             
         #Encerra o jogo quando o loop acaba    
-        pygame.quit()
+        # pygame.quit()
 
     def paused(self):
         self.pause = True
