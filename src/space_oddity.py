@@ -174,10 +174,10 @@ def run_game():
 
     # Atribui a classe player a uma variável
     player = cso.Player()
-    hitbox = cso.Hitbox(player)
+    player.hitbox = cso.Hitbox(player)
 
     # Adiciona player aos grupo de sprites
-    all_sprites.add(player, hitbox)
+    all_sprites.add(player, player.hitbox)
 
     # testButton = cso.Button(color=cso.WHITE, x=200, y=200, width=200, height=200, size=20, text="ABCASKLDASKLDNASD")
 
@@ -250,21 +250,21 @@ def run_game():
             
             
         hits = pygame.sprite.spritecollide(
-            hitbox, asteroids, False, pygame.sprite.collide_circle)
+            player.hitbox, asteroids, False, pygame.sprite.collide_circle)
         if hits:
             running = False
 
         hits = pygame.sprite.spritecollide(
-            hitbox, enemies_bullets, False, pygame.sprite.collide_circle)
+            player.hitbox, enemies_bullets, False, pygame.sprite.collide_circle)
         if hits:
             running = False
             
         keys_pressed = pygame.key.get_pressed()
 
         if keys_pressed[pygame.K_LSHIFT]:
-                hitbox.set_visible(True)
+                player.hitbox.set_visible(True)
         elif not keys_pressed[pygame.K_LSHIFT]:
-                hitbox.set_visible(False)
+                player.hitbox.set_visible(False)
 
         
 
