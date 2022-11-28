@@ -155,9 +155,10 @@ def run_game():
 
     # Atribui a classe player a uma variável
     player = cso.Player()
+    hitbox = cso.Hitbox(player)
 
     # Adiciona player aos grupo de sprites
-    all_sprites.add(player)
+    all_sprites.add(player, hitbox)
 
     # Adiciona 5 asteroides na tela por vez
     for i in range(5):
@@ -204,9 +205,17 @@ def run_game():
             asteroids.add(new_asteroid)
 
         hits = pygame.sprite.spritecollide(
-            player, asteroids, False, pygame.sprite.collide_circle)
+            hitbox, asteroids, False, pygame.sprite.collide_circle)
+
         if hits:
             running = False
+        
+        keys_pressed = pygame.key.get_pressed()
+
+        if keys_pressed[pygame.K_LSHIFT]:
+                hitbox.set_visible(True)
+        elif not keys_pressed[pygame.K_LSHIFT]:
+                hitbox.set_visible(False)
 
         # Defina a imagem de fundo da tela
         screen.fill((0, 0, 0))

@@ -5,6 +5,13 @@ import os
 import space_oddity as so
 import modulo_space_oddity as mso
 
+# Defina a localização das pastas necessárias
+source_folder = os.path.dirname(__file__)
+img_folder = os.path.join(source_folder, "img")
+sound_folder = os.path.join(source_folder, "sounds")
+font_folder = os.path.join(source_folder, "fonts")
+save_folder = os.path.join(source_folder, "save")
+
 RED = (255, 0, 0)
 GREEN = (20, 255, 140)
 BLUE = (100, 100, 255)
@@ -12,6 +19,48 @@ GREY = (210, 210 ,210)
 WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 MAGENTA = (194,9,84)
+
+class Hitbox(pygame.sprite.Sprite):
+    '''The sprite for the player hit box sprite. Used in bullet detection.'''
+    
+    def __init__(self, player):
+        '''This method initializes the sprite using the player sprite.'''
+            
+        # Call the parent __init__() method
+        pygame.sprite.Sprite.__init__(self)
+        
+        #Image loading
+        self.__hitbox = pygame.image.load(os.path.join(img_folder, "hitbox.png"))\
+            .convert_alpha()
+        self.__temp = pygame.image.load(os.path.join(img_folder, "temp.png")).convert_alpha()
+        
+        #Instance value setting.
+        self.image = self.__hitbox
+        self.rect = self.image.get_rect()
+        self.__player = player
+    
+    def position(self, player):
+        '''This method uses the player sprite instance to reposition itself.'''
+        
+        #Mutate self center.
+        self.rect.center = player.rect.center
+        
+    def set_visible(self, visible):
+        '''This method uses the visible parameter (boolean), to set image from
+        visible to invisible.'''
+        
+        #Change image depending on if visible
+        if visible:
+            self.image = self.__hitbox
+        else:
+            self.image = self.__temp
+
+    def update(self):
+        '''This sprite updates the position of the hitbox sprite. using a
+        method.'''
+        
+        #Position hit box in the center of the player sprite.
+        self.position(self.__player)
 
 #Cria a classe para o jogador
 class Player(pygame.sprite.Sprite):
@@ -30,6 +79,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.bottom = so.HEIGHT -10
         self.x_speed = 0
         self.y_speed = 0
+        self.focus = False
         
     #Atualiza a nave de acordo com os comandos do jogador   
     def update(self):
@@ -57,6 +107,7 @@ class Player(pygame.sprite.Sprite):
             self.rect.top = 0
         if self.rect.bottom > so.HEIGHT:
             self.rect.bottom = so.HEIGHT
+
     def shoot(self):
         shoot_sound = pygame.mixer.Sound(os.path.join(so.sound_folder,"Laser_Shoot4.wav"))
         shoot_sound.set_volume(0.5)
