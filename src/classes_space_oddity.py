@@ -3,6 +3,15 @@ import random
 import os
 
 import space_oddity as so
+import modulo_space_oddity as mso
+
+RED = (255, 0, 0)
+GREEN = (20, 255, 140)
+BLUE = (100, 100, 255)
+GREY = (210, 210 ,210)
+WHITE = (255, 255, 255)
+BLACK = (0, 0, 0)
+MAGENTA = (194,9,84)
 
 #Cria a classe para o jogador
 class Player(pygame.sprite.Sprite):
@@ -111,3 +120,38 @@ class Bullet(pygame.sprite.Sprite):
         #Caso o asteroide ultrapasse as bordas, crie outro
         if self.rect.bottom < 0:
             self.kill()
+
+class Button():
+    def __init__(self, text, x, y, width, height, font_size=20, background_color=(255, 255, 255), text_color=(0,0,0)):
+        self.text = text
+        self.x = x
+        self.y = y
+        self.width = width
+        self.height = height
+        self.font_size = font_size
+        self.background_color = background_color
+        self.text_color = text_color
+
+    def draw(self,screen,outline=None):
+        if outline:
+            pygame.draw.rect(screen, outline, (self.x-2,self.y-2,self.width+4,self.height+4),0)
+            
+        pygame.draw.rect(screen, self.background_color, (self.x,self.y,self.width,self.height),0)
+        
+        if self.text != "":
+            myfont = pygame.font.SysFont('arial', 20)
+            text_surface = myfont.render(self.text, 1, self.text_color)
+            screen.blit(text_surface, (self.x + (self.width/2 - text_surface.get_width()/2), self.y + (self.height/2 - text_surface.get_height()/2)))
+
+        pos = pygame.mouse.get_pos()
+        if self.is_over(pos):
+            self.background_color = WHITE
+        else:
+            self.background_color = GREY
+
+    def is_over(self, pos):
+        if pos[0] > self.x and pos[0] < self.x + self.width:
+            if pos[1] > self.y and pos[1] < self.y + self.height:
+                return True
+                
+        return False   
