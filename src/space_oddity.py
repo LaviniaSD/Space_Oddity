@@ -1,11 +1,13 @@
 '''Módulo Principal do jogo
 Nesse módulo será executado o loop principal do jogo
 '''
+
 # Música tema de FoxSynergy
 # Importe as bibliotecas necessárias
 import json
 import pygame
 import os
+import random
 
 import classes_space_oddity as cso
 import modulo_space_oddity as mso
@@ -51,6 +53,9 @@ all_sprites = pygame.sprite.Group()
 
 # Crie um grupo para os asteroides
 asteroids = pygame.sprite.Group()
+
+# Crie um grupo para as naves inimigas
+enemy_ships = pygame.sprite.Group()
 
 # Crie um grupo para as balas
 bullets = pygame.sprite.Group()
@@ -151,6 +156,7 @@ def menu():
 
 menu()
 
+ 
 def run_game():
 
     # Atribui a classe player a uma variável
@@ -160,20 +166,20 @@ def run_game():
     # Adiciona player aos grupo de sprites
     all_sprites.add(player, hitbox)
 
-    # Adiciona 5 asteroides na tela por vez
-    for i in range(5):
-        asteroid = cso.Asteroids()
-        asteroids.add(asteroid)
-        all_sprites.add(asteroids)
 
     # testButton = cso.Button(color=cso.WHITE, x=200, y=200, width=200, height=200, size=20, text="ABCASKLDASKLDNASD")
+
+
+    #Cria uma marcação de tempo inicial para spwaning
+    start = pygame.time.get_ticks()
+    
 
     # Loop para o jogo
 
     running = True
-
-    score = 0
+    
     pygame.mixer.music.play(loops=-1)
+    
     while running:
         # Faça o jogo funcionar com a quantidade de frames por segundo estabelecidas
         clock.tick(FPS)
@@ -193,10 +199,37 @@ def run_game():
 
         # Atualiza os sprites
         all_sprites.update()
+        
+        
+        #Spwana inimigos em intervalos de 3 e 4 segundos
+        now = pygame.time.get_ticks()
+        
+        if now - start > 3000 and  now - start < 3200:
+            asteroid = cso.Asteroids()
+            asteroids.add(asteroid)
+            all_sprites.add(asteroids)
+       
+        if now - start > 4000:
+            start = now
+            enemy = cso.Enemy_ship()
+            
+            for i in range (100):
+                enemy.shoot(10)
+            enemy.update()
+            
+            
+            
+            enemy_ships.add(enemy)
+            all_sprites.add(enemy)
+            enemy.update()
+
+
 
         hits = pygame.sprite.groupcollide(asteroids, bullets, True, True)
         for hit in hits:
-            score += 50
+            asteroid_score = hit.get_score()
+            player.set_score(asteroid_score) 
+            
             explosion_sound = pygame.mixer.Sound(
                 os.path.join(sound_folder, "Explosion7.wav"))
             explosion_sound.play()
@@ -209,6 +242,7 @@ def run_game():
 
         if hits:
             running = False
+
         
         keys_pressed = pygame.key.get_pressed()
 
@@ -216,6 +250,13 @@ def run_game():
                 hitbox.set_visible(True)
         elif not keys_pressed[pygame.K_LSHIFT]:
                 hitbox.set_visible(False)
+
+            
+        hits = pygame.sprite.spritecollide(
+            hitbox, bullets, False, pygame.sprite.collide_circle)
+        if hits:
+            running = False
+
 
         # Defina a imagem de fundo da tela
         screen.fill((0, 0, 0))
@@ -230,7 +271,13 @@ def run_game():
         all_sprites.draw(screen)
 
         # Insere o score na tela
-        mso.draw_text(screen, f'score: {str(score)}', 20, WIDTH/2, 10, color=(255, 255, 255))
+
+        #Adiciona a pontuação no topo da tela
+        #mso.draw_text(screen, f'score: {str(player.get_score())}', 40, WIDTH/2, 10)
 
         # Atualiza o jogo
         pygame.display.update()
+        
+    #Encerra o jogo quando o loop acaba    
+    pygame.quit()
+
