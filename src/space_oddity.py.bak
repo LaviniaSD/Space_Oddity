@@ -176,12 +176,17 @@ def run_game():
     # Adiciona player aos grupo de sprites
     all_sprites.add(player, hitbox)
 
+
+<<<<<<< HEAD
+=======
     # testButton = cso.Button(color=cso.WHITE, x=200, y=200, width=200, height=200, size=20, text="ABCASKLDASKLDNASD")
 
 
     #Cria uma marcação de tempo inicial para spwaning
     start = pygame.time.get_ticks()
     
+
+>>>>>>> 5e3b1a35c2ca35da4c37740c4252274d5b074b24
     # Loop para o jogo
 
     running = True
