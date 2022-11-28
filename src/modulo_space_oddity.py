@@ -37,3 +37,9 @@ def enemy_shoots(enemy):
         y_speed= random.randint(10,10)
         enemy.shoot(x_speed,y_speed)
         time.sleep(0.001)
+        
+def player_dies(loop):
+    loop = False
+    return loop
+    
+    

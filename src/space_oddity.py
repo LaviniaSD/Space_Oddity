@@ -233,9 +233,9 @@ class Game():
                 mso.spawn_enemy_ships(enemy_ships,all_sprites)
 
             #Cria casos de colisão entre balas do jogador e asteroides
-            hits = pygame.sprite.groupcollide(asteroids, bullets, True, True)
-            for hit in hits:
-                asteroid_score = hit.get_score()
+            bullet_hits_asteroid = pygame.sprite.groupcollide(asteroids, bullets, True, True)
+            for hitted_asteroid in bullet_hits_asteroid:
+                asteroid_score = hitted_asteroid.get_score()
                 player.set_score(asteroid_score) 
                 
                 explosion_sound = pygame.mixer.Sound(
@@ -246,9 +246,9 @@ class Game():
                 asteroids.add(new_asteroid)
                 
             #Cria casos de colisão entre balas do jogador e naves inimigas    
-            hits = pygame.sprite.groupcollide(enemy_ships,bullets, True, True)
-            for hit in hits:
-                enemy_score = hit.get_score()
+            bullet_hits_enemy_ship = pygame.sprite.groupcollide(enemy_ships,bullets, True, True)
+            for hitted_enemy_ship in bullet_hits_enemy_ship:
+                enemy_score = hitted_enemy_ship.get_score()
                 player.set_score(enemy_score) 
                 
                 explosion_sound = pygame.mixer.Sound(
@@ -256,22 +256,22 @@ class Game():
                 explosion_sound.play()
                 
             #Cria casos de colisão entre jogador e asteroides    
-            hits = pygame.sprite.spritecollide(
+            asteroid_hits_player = pygame.sprite.spritecollide(
                 player.hitbox, asteroids, False, pygame.sprite.collide_circle)
-            if hits:
-                running = False
+            if asteroid_hits_player:
+                running = mso.player_dies(running) 
                 
             #Cria casos de colisão entre balas do inimigo e o jogador    
-            hits = pygame.sprite.spritecollide(
+            enemy_shoots_player = pygame.sprite.spritecollide(
                 player.hitbox, enemies_bullets, False, pygame.sprite.collide_circle)
-            if hits:
-                running = False
+            if enemy_shoots_player:
+                running = mso.player_dies(running) 
                 
             #Cria casos de colisão entre nave inimiga e o jogador    
-            hits = pygame.sprite.spritecollide(
+            enemy_hits_player = pygame.sprite.spritecollide(
                 player.hitbox, enemy_ships, False, pygame.sprite.collide_circle)
-            if hits:
-                running = False   
+            if enemy_hits_player:
+                running = mso.player_dies(running) 
 
             keys_pressed = pygame.key.get_pressed()
 
@@ -300,8 +300,8 @@ class Game():
             # Atualiza o jogo
             pygame.display.update()
             
-        #Encerra o jogo quando o loop acaba    
-        # pygame.quit()
+    #Encerra o jogo quando o loop acaba    
+        pygame.quit()
 
     def paused(self):
         self.pause = True
