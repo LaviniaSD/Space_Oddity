@@ -132,7 +132,9 @@ class Player(pygame.sprite.Sprite):
         self.image = pygame.transform.scale(self.image, (64, 64))
         self.image.set_colorkey((0,0,0))
 
-    
+        #Criar hitbox de jogador 
+        self.hitbox = None
+
         #Cria a reta e o círculo para posicionar a classe
         self.rect = self.image.get_rect()
         self.radius = 28
@@ -245,6 +247,9 @@ class Asteroids(pygame.sprite.Sprite):
         self.image = pygame.transform.scale2x(self.image)
         self.image.set_colorkey((0,0,0))
         
+        #Define a hitbox 
+        self.hitbox = None
+
         #Cria a reta e o círculo para posicionar a classe
         self.rect = self.image.get_rect()
         self.radius = int(self.rect.width * 0.85 / 2)
