@@ -213,19 +213,20 @@ def run_game():
         all_sprites.update()
         
         
-        #Spwana inimigos em intervalos de 3 e 4 segundos
+        #Spwana asteroides em intervalos de 3 segundos
         now = pygame.time.get_ticks()
         if now - start_asteroids > 3000 :
             start_asteroids = now
             mso.spwan_asteroids(asteroids,all_sprites)
        
+        #Spwana naves inimigas em intervalos de 4 segundos
         if now - start_enemies > 4000:
             start_enemies = now
             mso.spwan_enemy_ships(enemy_ships,all_sprites)
         
 
 
-        
+        #Cria casos de colisão entre balas do jogador e asteroides
         hits = pygame.sprite.groupcollide(asteroids, bullets, True, True)
         for hit in hits:
             asteroid_score = hit.get_score()
@@ -239,6 +240,7 @@ def run_game():
             asteroids.add(new_asteroid)
             
             
+        #Cria casos de colisão entre balas do jogador e naves inimigas    
         hits = pygame.sprite.groupcollide(enemy_ships,bullets, True, True)
         for hit in hits:
             enemy_score = hit.get_score()
@@ -248,16 +250,23 @@ def run_game():
                 os.path.join(sound_folder, "Explosion7.wav"))
             explosion_sound.play()
             
-            
+        #Cria casos de colisão entre jogador e asteroides    
         hits = pygame.sprite.spritecollide(
             player.hitbox, asteroids, False, pygame.sprite.collide_circle)
         if hits:
             running = False
-
+            
+        #Cria casos de colisão entre balas do inimigo e o jogador    
         hits = pygame.sprite.spritecollide(
             player.hitbox, enemies_bullets, False, pygame.sprite.collide_circle)
         if hits:
             running = False
+            
+        #Cria casos de colisão entre nave inimiga e o jogador    
+        hits = pygame.sprite.spritecollide(
+            player.hitbox, enemy_ships, False, pygame.sprite.collide_circle)
+        if hits:
+            running = False    
             
         keys_pressed = pygame.key.get_pressed()
 
