@@ -6,7 +6,7 @@ import pygame
 import random
 import os
 
-# Importa o módulo space_oddity
+# Importa os outros módulos do jogo
 import space_oddity as so
 
 import modulo_space_oddity as mso
@@ -18,6 +18,7 @@ sound_folder = os.path.join(source_folder, "sounds")
 font_folder = os.path.join(source_folder, "fonts")
 save_folder = os.path.join(source_folder, "save")
 
+# Define cores 
 RED = (255, 0, 0)
 GREEN = (20, 255, 140)
 BLUE = (100, 100, 255)
@@ -26,8 +27,10 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 MAGENTA = (194,9,84)
 
+#Inicia o pygame
 pygame.init()
 
+#Define a fonte utilizada no jogo
 font = pygame.font.SysFont('arial', 20)
 
 class Hitbox(pygame.sprite.Sprite):
@@ -104,11 +107,13 @@ class Bullet(pygame.sprite.Sprite):
     
     
     #Muda a posição da bala
-    def set_speed(self,new_speed):
-        self.y_speed = new_speed
+    def set_speed(self,new_speed_x,new_speed_y):
+        self.x_speed = new_speed_x
+        self.y_speed = new_speed_y
     
     #Muda a posição da bala
     def update(self):
+        self.rect.x += self.x_speed 
         self.rect.y += self.y_speed 
         
         #Caso a bala ultrapasse as bordas, a elimine.
@@ -212,7 +217,7 @@ class Player(pygame.sprite.Sprite):
         shoot_sound = pygame.mixer.Sound(os.path.join(so.sound_folder,"Laser_Shoot4.wav"))
         shoot_sound.set_volume(0.5)
         bullet = Bullet(self.rect.centerx,self.rect.top)
-        bullet.set_speed(-15)
+        bullet.set_speed(0,-15)
         so.all_sprites.add(bullet)
         so.bullets.add(bullet)
         shoot_sound.play()
@@ -353,20 +358,20 @@ class Enemy_ship(pygame.sprite.Sprite):
             self.kill()
         
     #Permite que a nave inimiga atire
-    def shoot(self,speed):
+    def shoot(self,speed_x,speed_y):
         shoot_sound = pygame.mixer.Sound(os.path.join(so.sound_folder,"Laser_Shoot4.wav"))
         shoot_sound.set_volume(0.5)
         bullet = Bullet(self.rect.centerx,self.rect.top)
-        bullet.y_speed = speed
+        bullet.set_speed(speed_x, speed_y) 
+        
         so.all_sprites.add(bullet)
-        so.bullets.add(bullet)
+        so.enemies_bullets.add(bullet)
         shoot_sound.play()
         
     #Permite que a nave inimiga se movimente   
     def update(self):
         self.y_speed = -1
         self.rect.y += self.y_speed
-        pass
 
 class Button():
 

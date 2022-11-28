@@ -14,3 +14,4 @@ def draw_text(surface, text, size, x, y, color):
 def quit_game():
     pygame.quit()
     sys.exit()
+    

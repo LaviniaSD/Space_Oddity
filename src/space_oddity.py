@@ -60,6 +60,9 @@ enemy_ships = pygame.sprite.Group()
 # Crie um grupo para as balas
 bullets = pygame.sprite.Group()
 
+# Crie um grupo para as balas dos inimigos
+enemies_bullets = pygame.sprite.Group()
+
 in_menu = bool
 is_playing = True
 def menu():
@@ -220,19 +223,16 @@ def run_game():
         if now - start > 4000:
             start = now
             enemy = cso.Enemy_ship()
-            
-            for i in range (100):
-                enemy.shoot(10)
+            enemy.shoot(10,10)
             enemy.update()
             
-            
-            
+
             enemy_ships.add(enemy)
             all_sprites.add(enemy)
             enemy.update()
 
 
-
+        
         hits = pygame.sprite.groupcollide(asteroids, bullets, True, True)
         for hit in hits:
             asteroid_score = hit.get_score()
@@ -244,14 +244,28 @@ def run_game():
             new_asteroid = cso.Asteroids()
             all_sprites.add(new_asteroid)
             asteroids.add(new_asteroid)
-
+            
+            
+        hits = pygame.sprite.groupcollide(enemy_ships,bullets, True, True)
+        for hit in hits:
+            enemy_score = hit.get_score()
+            player.set_score(enemy_score) 
+            
+            explosion_sound = pygame.mixer.Sound(
+                os.path.join(sound_folder, "Explosion7.wav"))
+            explosion_sound.play()
+            
+            
         hits = pygame.sprite.spritecollide(
             hitbox, asteroids, False, pygame.sprite.collide_circle)
-
         if hits:
             running = False
 
-        
+        hits = pygame.sprite.spritecollide(
+            hitbox, enemies_bullets, False, pygame.sprite.collide_circle)
+        if hits:
+            running = False
+            
         keys_pressed = pygame.key.get_pressed()
 
         if keys_pressed[pygame.K_LSHIFT]:
@@ -259,11 +273,7 @@ def run_game():
         elif not keys_pressed[pygame.K_LSHIFT]:
                 hitbox.set_visible(False)
 
-            
-        hits = pygame.sprite.spritecollide(
-            hitbox, bullets, False, pygame.sprite.collide_circle)
-        if hits:
-            running = False
+        
 
 
         # Defina a imagem de fundo da tela
@@ -281,7 +291,7 @@ def run_game():
         # Insere o score na tela
 
         #Adiciona a pontuação no topo da tela
-        #mso.draw_text(screen, f'score: {str(player.get_score())}', 40, WIDTH/2, 10)
+        mso.draw_text(screen, f'score: {str(player.get_score())}', 40, WIDTH/2, 10,(255,255,255))
 
         # Atualiza o jogo
         pygame.display.update()
