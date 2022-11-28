@@ -96,20 +96,22 @@ class Bullet(pygame.sprite.Sprite):
         self.x_speed = 0
         self.y_speed = 0
         
-     
+
     #Retorna a posição da bala   
     def get_position(self):
         return self.rect.x,self.rect.y
     
+
     #Retorna a velocidade da bala     
-    def get_speed(self):
+    def speed(self):
         return self.x_speed,self.y_speed
     
-    
+
     #Muda a posição da bala
     def set_speed(self,new_speed_x,new_speed_y):
         self.x_speed = new_speed_x
         self.y_speed = new_speed_y
+    
     
     #Muda a posição da bala
     def update(self):
@@ -153,13 +155,13 @@ class Player(pygame.sprite.Sprite):
 
         #Define o score do jogador
         self.score = 0
-        
+    
     #Retorna a posição do jogador    
     def get_position(self):
         return self.rect.x,self.rect.y
     
     #Retorna a velocidade do jogador    
-    def get_speed(self):
+    def speed(self):
         return self.x_speed,self.y_speed
     
     #Retorna se o jogador está vivo
@@ -263,23 +265,27 @@ class Asteroids(pygame.sprite.Sprite):
         #Define o score do jogador
         self.score = 100-self.radius
         
-        
+   
     #Retorna a posição do asteroide    
     def get_position(self):
         return self.rect.x,self.rect.y
     
+
     #Retorna a velocidade do asteroide    
-    def get_speed(self):
+    def speed(self):
         return self.x_speed,self.y_speed
     
+
     #Retorna se o asteroide está "vivo"
     def get_is_alive(self):
         return self.is_alive
     
+
     #Retorna o score que o asteroide dará ao jogador quando destruído
     def get_score(self):
         return self.score
     
+
     #Altera a propriedade is_alive
     def set_is_alive(self,life_status):
         self.is_alive = life_status
@@ -316,9 +322,9 @@ class Enemy_ship(pygame.sprite.Sprite):
         self.rect = self.image.get_rect()
         self.radius = 28
         
-        #Orienta a posição inicial do asteroide
+        #Orienta a posição inicial da nave inimiga
         self.rect.x = random.randrange(so.WIDTH - self.rect.width)
-        self.rect.y = random.randrange(so.HEIGHT/4 - self.rect.height - 50)
+        self.rect.y = random.randrange(so.HEIGHT/8,(so.HEIGHT/8)+30)
         
         #Define a velocidade da nave inimiga
         self.x_speed = 0
@@ -330,22 +336,27 @@ class Enemy_ship(pygame.sprite.Sprite):
         #Define o score que a nave inimiga dá ao jogador quando destruida
         self.score = 100
         
+
     #Retorna a posição da nave inimiga    
     def get_position(self):
         return self.rect.x,self.rect.y
     
+
     #Retorna a velocidade da nave inimiga   
-    def get_speed(self):
+    def speed(self):
         return self.x_speed,self.y_speed
     
+
     #Retorna se a nave inimiga está viva
     def get_is_alive(self):
         return self.is_alive
     
+
     #Retorna o score da nave inimiga 
     def get_score(self):
         return self.score
     
+
     #Altera a propriedade is_alive
     def set_is_alive(self,life_status):
         self.is_alive = life_status

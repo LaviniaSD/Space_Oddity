@@ -183,7 +183,8 @@ def run_game():
 
 
     #Cria uma marcação de tempo inicial para spwaning
-    start = pygame.time.get_ticks()
+    start_asteroids = pygame.time.get_ticks()
+    start_enemies = pygame.time.get_ticks()
     
     # Loop para o jogo
 
@@ -214,22 +215,14 @@ def run_game():
         
         #Spwana inimigos em intervalos de 3 e 4 segundos
         now = pygame.time.get_ticks()
-        
-        if now - start > 3000 and  now - start < 3200:
-            asteroid = cso.Asteroids()
-            asteroids.add(asteroid)
-            all_sprites.add(asteroids)
+        if now - start_asteroids > 3000 :
+            start_asteroids = now
+            mso.spwan_asteroids(asteroids,all_sprites)
        
-        if now - start > 4000:
-            start = now
-            enemy = cso.Enemy_ship()
-            enemy.shoot(10,10)
-            enemy.update()
-            
-
-            enemy_ships.add(enemy)
-            all_sprites.add(enemy)
-            enemy.update()
+        if now - start_enemies > 4000:
+            start_enemies = now
+            mso.spwan_enemy_ships(enemy_ships,all_sprites)
+        
 
 
         
