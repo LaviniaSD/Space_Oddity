@@ -424,7 +424,7 @@ class InputTextBox():
     COLOR_ACTIVE = BLACK
 
     # Construtor da classe InputTextBox
-    def __init__(self, x, y, width=200, height=25, text="", background_color=(255, 255, 255), text_color=(0, 0, 0), centered=True, max_input_length=30):
+    def __init__(self, x, y, width=200, height=32, text="", background_color=(255, 255, 255), text_color=(0, 0, 0), centered=True, max_input_length=30):
         # Caso deseje centralizar o componente nas coordenadas apontadas
         if not centered:
             self.x = x

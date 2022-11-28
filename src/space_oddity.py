@@ -5,9 +5,10 @@ Nesse módulo será executado o loop principal do jogo
 # Música tema de FoxSynergy
 # Importe as bibliotecas necessárias
 import json
-import pygame
 import os
+import pygame
 import random
+import sys
 
 import classes_space_oddity as cso
 import modulo_space_oddity as mso
@@ -60,232 +61,290 @@ enemy_ships = pygame.sprite.Group()
 # Crie um grupo para as balas
 bullets = pygame.sprite.Group()
 
-in_menu = bool
-is_playing = True
-def menu():
-    
-    global data, in_menu, firts
+class Game():
 
-    x_centered = WIDTH / 2
-    y_centered = HEIGHT / 2
+    def __init__(self):
+        self.in_menu = True
+        self.game_is_running = False
+        self.pause = False
+        self.mainloop("menu")
 
-    # Instancia os botões do menu
-    play_button = cso.Button(text="PLAY", x=x_centered, y=y_centered-60, width=200, height=25)
-    scores_button = cso.Button(text="SCORES", x=x_centered, y=y_centered-30, width=200, height=25)
-    intructions_button = cso.Button(text="INSTRUCTIONS", x=x_centered, y=y_centered, width=200, height=25)
-    exit_button = cso.Button(text="EXIT", x=x_centered, y=y_centered+30, width=200, height=25)
-    back_button = cso.Button(text="BACK TO GAME", x=x_centered, y=y_centered+60, width=200, height=25)
+    def mainloop(self, game_status):
+        self.game_status = game_status
 
-    input_box = cso.InputTextBox(x_centered-300, y_centered, 140, 32)
+        while game_status != "quit":
+            if game_status == "menu":
+                game_status = self.menu()
+            elif game_status == "game":
+                game_status =  self.run_game()
 
-    # Lê os dados dos high scores a partir do arquivo ".save/scores.txt"
-    scores_filepath = os.path.join(save_folder, "scores.txt")
-    try:
-        with open(scores_filepath, "r") as file:
-            if file.read() != "":
-                scores_data = json.load(file)
-            else:
-                scores_data = {}
-    except FileNotFoundError:
-        scores_data = {"scores": []} # TODO: Conferir qual seria a fórmula de um arquivo vazio
-    sorted_scores = sorted(scores_data.items(), key=lambda x: x[1]['points'], reverse=True)
+    in_menu = bool
+    game_is_running = True
 
-    # Inicia um loop para o menu
-    while in_menu:
-        # fnc()
+    def menu(self):
         
-        # Carrega a imagem de fundo do menu
-        # screen.blit(menuBg, (0, 0))
+        global data, in_menu, firts
 
-        # Desenha os botões na tela
-        play_button.draw(screen, (0,0,0))
-        scores_button.draw(screen, (0,0,0))
-        intructions_button.draw(screen, (0,0,0))
-        exit_button.draw(screen, (0,0,0))
+        # Define referências de posições para os botões, ao centro da tela
+        x_centered = WIDTH / 2
+        y_centered = HEIGHT / 2
 
-        input_box.update()
-        input_box.draw(screen)
+        # Instancia os botões do menu
+        play_button = cso.Button(text="PLAY", x=x_centered, y=y_centered-60, width=200, height=25)
+        scores_button = cso.Button(text="SCORES", x=x_centered, y=y_centered-30, width=200, height=25)
+        intructions_button = cso.Button(text="INSTRUCTIONS", x=x_centered, y=y_centered, width=200, height=25)
+        exit_button = cso.Button(text="EXIT", x=x_centered, y=y_centered+30, width=200, height=25)
+        back_button = cso.Button(text="BACK TO GAME", x=x_centered, y=y_centered+60, width=200, height=25)
 
-        # Caso o usuário estava jogando, desenha o botão de voltar ao jogo
-        if is_playing:
-            back_button.draw(screen, (0,0,0))
-
-        # Verifica a ocorrência de eventos
-        for event in pygame.event.get():
-            # Recolhe a posição atual do mouse
-            pos = pygame.mouse.get_pos()
-
-            input_box.handle_event(event)
- 
-            # Caso o usuário feche a janela
-            if event.type == pygame.QUIT:
-                in_menu = False
-                mso.quit_game()
-
-            # Caso o usuário clique com o botão esquerdo do mouse
-            if event.type == pygame.MOUSEBUTTONDOWN:
-                
-                # Caso o usuário clique no botão de play
-                if play_button.is_over(pos):
-                    # changescn("enterName")
-                    print("enterName")
-      
-                # Caso o usuário clique no botão de scores
-                elif scores_button.is_over(pos):
-                    # changescn("scores")
-                    print("scores")
-
-                # Caso o usuário clique no botão de instruções
-                elif intructions_button.is_over(pos):
-                    # changescn("instructions")
-                    print("instructions")
-                
-                # Caso o usuário clique no botão de sair
-                elif exit_button.is_over(pos):
-                    in_menu = False
-                    mso.quit_game()
-                    
-                # Caso o usuário clique no botão de voltar para o jogo (caso esteja jogando)
-                elif back_button.is_over(pos):
-                    # changescn("mainLoop")
-                    print("mainLoop")
-
+        # Lê os dados dos high scores a partir do arquivo ".save/scores.txt"
+        scores_filepath = os.path.join(save_folder, "scores.txt")
+        try:
+            with open(scores_filepath, "r") as file:
+                if file.read() != "":
+                    scores_data = json.load(file)
                 else:
-                    pass
+                    scores_data = {}
+        except FileNotFoundError:
+            scores_data = {"scores": []} # TODO: Conferir qual seria a fórmula de um arquivo vazio
+        sorted_scores = sorted(scores_data.items(), key=lambda x: x[1]['points'], reverse=True)
+
+        # Inicia um loop para o menu
+        while self.in_menu:
+            # fnc()
+            
+            # Carrega a imagem de fundo do menu
+            # screen.blit(menuBg, (0, 0))
+
+            screen.fill(cso.WHITE)
+
+            # Desenha os botões na tela
+            play_button.draw(screen, (0,0,0))
+            scores_button.draw(screen, (0,0,0))
+            intructions_button.draw(screen, (0,0,0))
+            exit_button.draw(screen, (0,0,0))
+
+            # Caso o usuário estava jogando, desenha o botão de voltar ao jogo
+            if self.game_is_running:
+                back_button.draw(screen, (0,0,0))
+
+            # Verifica a ocorrência de eventos
+            for event in pygame.event.get():
+                # Recolhe a posição atual do mouse
+                pos = pygame.mouse.get_pos()
+
+                # Caso o usuário feche a janela
+                if event.type == pygame.QUIT:
+                    self.in_menu = False
+                    mso.quit_game()
+
+                # Caso o usuário clique com o botão esquerdo do mouse
+                if event.type == pygame.MOUSEBUTTONDOWN:
                     
-            # Caso o usuário aperte alguma tecla do teclado
-            if event.type==pygame.KEYDOWN:
-                # Caso o usuário aperte a tecla ESC
-                if event.key==pygame.K_ESCAPE:
-                    # changescn("mainLoop") # TODO: precisa disso aqui????
-                    in_menu = False
-                    print("mainLoop")
+                    # Caso o usuário clique no botão de play
+                    if play_button.is_over(pos):
+                        # changescn("enterName")
+                        # print("enterName")
+
+                        # self.run_game()
+                        return "game"
+        
+                    # Caso o usuário clique no botão de scores
+                    elif scores_button.is_over(pos):
+                        # changescn("scores")
+                        print("scores")
+
+                    # Caso o usuário clique no botão de instruções
+                    elif intructions_button.is_over(pos):
+                        # changescn("instructions")
+                        print("instructions")
                     
-        # Atualiza os conteúdos da tela
-        pygame.display.flip()
+                    # Caso o usuário clique no botão de sair
+                    elif exit_button.is_over(pos):
+                        self.in_menu = False
+                        mso.quit_game()
+                        
+                    # Caso o usuário clique no botão de voltar para o jogo (caso esteja jogando)
+                    elif back_button.is_over(pos):
+                        # changescn("mainLoop")
+                        print("mainLoop")
 
-menu()
+                    else:
+                        pass
+                        
+                # # Caso o usuário aperte alguma tecla do teclado
+                # if event.type==pygame.KEYDOWN:
+                #     # Caso o usuário aperte a tecla ESC
+                #     if event.key==pygame.K_ESCAPE:
+                #         # changescn("mainLoop") # TODO: precisa disso aqui????
+                #         self.in_menu = False
+                #         print("mainLoop")
+                        
+            # Atualiza os conteúdos da tela
+            pygame.display.flip()
 
- 
-def run_game():
+    def run_game(self):
 
-    # Atribui a classe player a uma variável
-    player = cso.Player()
-    hitbox = cso.Hitbox(player)
+        # Atribui a classe player a uma variável
+        player = cso.Player()
+        hitbox = cso.Hitbox(player)
 
-    # Adiciona player aos grupo de sprites
-    all_sprites.add(player, hitbox)
+        # Adiciona player aos grupo de sprites
+        all_sprites.add(player, hitbox)
 
-    # testButton = cso.Button(color=cso.WHITE, x=200, y=200, width=200, height=200, size=20, text="ABCASKLDASKLDNASD")
+        #Cria uma marcação de tempo inicial para spwaning
+        start = pygame.time.get_ticks()
+        
+        # Loop para o jogo
 
+        running = True
+        
+        pygame.mixer.music.play(loops=-1)
+        
+        while running:
+            # Faça o jogo funcionar com a quantidade de frames por segundo estabelecidas
+            clock.tick(FPS)
 
-    #Cria uma marcação de tempo inicial para spwaning
-    start = pygame.time.get_ticks()
-    
-    # Loop para o jogo
-
-    running = True
-    
-    pygame.mixer.music.play(loops=-1)
-    
-    while running:
-        # Faça o jogo funcionar com a quantidade de frames por segundo estabelecidas
-        clock.tick(FPS)
-
-        # Faça o jogo reagir a eventos externos
-        for event in pygame.event.get():
-            # Permita que o usuário saia do jogo
-            if event.type == pygame.QUIT:
-                running = False
-                mso.quit_game()
-            elif event.type == pygame.KEYDOWN:
-                if event.key == pygame.K_SPACE:
-                    player.shoot()
-                elif event.key == pygame.K_ESCAPE:
+            # Faça o jogo reagir a eventos externos
+            for event in pygame.event.get():
+                # Permita que o usuário saia do jogo
+                if event.type == pygame.QUIT:
                     running = False
                     mso.quit_game()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_SPACE:
+                        player.shoot()
+                    elif event.key == pygame.K_ESCAPE:
+                        # running = False
+                        # mso.quit_game()
+                        self.pause = self.paused()
 
-        # Atualiza os sprites
-        all_sprites.update()
+            # Atualiza os sprites
+            all_sprites.update()
+            
+            #Spawna inimigos em intervalos de 3 e 4 segundos
+            now = pygame.time.get_ticks()
+            
+            if now - start > 3000 and  now - start < 3200:
+                asteroid = cso.Asteroids()
+                asteroids.add(asteroid)
+                all_sprites.add(asteroids)
         
-        
-        #Spwana inimigos em intervalos de 3 e 4 segundos
-        now = pygame.time.get_ticks()
-        
-        if now - start > 3000 and  now - start < 3200:
-            asteroid = cso.Asteroids()
-            asteroids.add(asteroid)
-            all_sprites.add(asteroids)
-       
-        if now - start > 4000:
-            start = now
-            enemy = cso.Enemy_ship()
+            if now - start > 4000:
+                start = now
+                enemy = cso.Enemy_ship()
+                
+                for i in range (100):
+                    enemy.shoot(10)
+                enemy.update()
+                
+                enemy_ships.add(enemy)
+                all_sprites.add(enemy)
+                enemy.update()
+
+            hits = pygame.sprite.groupcollide(asteroids, bullets, True, True)
+            for hit in hits:
+                asteroid_score = hit.get_score()
+                player.set_score(asteroid_score) 
+                
+                explosion_sound = pygame.mixer.Sound(
+                    os.path.join(sound_folder, "Explosion7.wav"))
+                explosion_sound.play()
+                new_asteroid = cso.Asteroids()
+                all_sprites.add(new_asteroid)
+                asteroids.add(new_asteroid)
+
+            hits = pygame.sprite.spritecollide(
+                hitbox, asteroids, False, pygame.sprite.collide_circle)
+
+            if hits:
+                running = False
+                self.game_over(player.get_score())
+                return "menu" # TODO unificar os métodos que retornam para o menu
+
+            keys_pressed = pygame.key.get_pressed()
+
+            if keys_pressed[pygame.K_LSHIFT]:
+                    hitbox.set_visible(True)
+            elif not keys_pressed[pygame.K_LSHIFT]:
+                    hitbox.set_visible(False)
+
+                
+            hits = pygame.sprite.spritecollide(
+                hitbox, bullets, False, pygame.sprite.collide_circle)
+            if hits:
+                running = False
+
+
+            # Defina a imagem de fundo da tela
+            screen.fill((0, 0, 0))
+
+            # Adiciona a imagem de fundo
+            screen.blit(background, background_rect)
+
+            # Atualize as imagens dos objetos quando ocorrerem mudanças
+            pygame.display.flip()
+
+            # Desenha os sprites na tela
+            all_sprites.draw(screen)
+
+            # Insere o score na tela
+
+            #Adiciona a pontuação no topo da tela
+            #mso.draw_text(screen, f'score: {str(player.get_score())}', 40, WIDTH/2, 10)
+
+            # Atualiza o jogo
+            pygame.display.update()
             
-            for i in range (100):
-                enemy.shoot(10)
-            enemy.update()
-            
-            
-            
-            enemy_ships.add(enemy)
-            all_sprites.add(enemy)
-            enemy.update()
+        #Encerra o jogo quando o loop acaba    
+        pygame.quit()
 
+    def paused(self):
+        self.pause = True
 
+        while self.pause:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    mso.quit_game()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        return False
+                    
+            screen.fill(cso.WHITE)
 
-        hits = pygame.sprite.groupcollide(asteroids, bullets, True, True)
-        for hit in hits:
-            asteroid_score = hit.get_score()
-            player.set_score(asteroid_score) 
-            
-            explosion_sound = pygame.mixer.Sound(
-                os.path.join(sound_folder, "Explosion7.wav"))
-            explosion_sound.play()
-            new_asteroid = cso.Asteroids()
-            all_sprites.add(new_asteroid)
-            asteroids.add(new_asteroid)
+            pygame.display.update()
+            clock.tick(FPS)
 
-        hits = pygame.sprite.spritecollide(
-            hitbox, asteroids, False, pygame.sprite.collide_circle)
+    def game_over(self, score):
+        self.over = True
 
-        if hits:
-            running = False
+        # Define referências de posições para os botões, ao centro da tela
+        x_centered = WIDTH / 2
+        y_centered = HEIGHT / 2
 
-        
-        keys_pressed = pygame.key.get_pressed()
+        player_name_box = cso.InputTextBox(x_centered, y_centered, 200, max_input_length=20)
+        ok_button = cso.Button(text="Salvar score", x=x_centered, y=y_centered+50, width=200, height=25)
 
-        if keys_pressed[pygame.K_LSHIFT]:
-                hitbox.set_visible(True)
-        elif not keys_pressed[pygame.K_LSHIFT]:
-                hitbox.set_visible(False)
+        while self.over:
 
-            
-        hits = pygame.sprite.spritecollide(
-            hitbox, bullets, False, pygame.sprite.collide_circle)
-        if hits:
-            running = False
+            screen.fill(cso.WHITE)
 
+            player_name_box.update()
+            player_name_box.draw(screen)
 
-        # Defina a imagem de fundo da tela
-        screen.fill((0, 0, 0))
+            ok_button.draw(screen, (0,0,0))
 
-        # Adiciona a imagem de fundo
-        screen.blit(background, background_rect)
+            for event in pygame.event.get():
 
-        # Atualize as imagens dos objetos quando ocorrerem mudanças
-        pygame.display.flip()
+                player_name_box.handle_event(event)
 
-        # Desenha os sprites na tela
-        all_sprites.draw(screen)
+                if event.type == pygame.QUIT:
+                    mso.quit_game()
+                elif event.type == pygame.KEYDOWN:
+                    if event.key == pygame.K_ESCAPE:
+                        return False
+                    elif event.key == pygame.K_RETURN:
+                        self.over = False
+                        return False
 
-        # Insere o score na tela
-
-        #Adiciona a pontuação no topo da tela
-        #mso.draw_text(screen, f'score: {str(player.get_score())}', 40, WIDTH/2, 10)
-
-        # Atualiza o jogo
-        pygame.display.update()
-        
-    #Encerra o jogo quando o loop acaba    
-    pygame.quit()
-
+            pygame.display.update()
+            clock.tick(FPS)
