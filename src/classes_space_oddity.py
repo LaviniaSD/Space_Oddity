@@ -38,7 +38,7 @@ font = pygame.font.SysFont('arial', 20)
 class Hitbox(pygame.sprite.Sprite):
     '''The sprite for the player hit box sprite. Used in bullet detection.'''
     
-    def __init__(self, player):
+    def __init__(self, entity):
         '''This method initializes the sprite using the player sprite.'''
             
         # Call the parent __init__() method
@@ -52,13 +52,13 @@ class Hitbox(pygame.sprite.Sprite):
         #Instance value setting.
         self.image = self.__hitbox
         self.rect = self.image.get_rect()
-        self.__player = player
+        self.__entity = entity
     
-    def position(self, player):
+    def position(self, entity):
         '''This method uses the player sprite instance to reposition itself.'''
         
         #Mutate self center.
-        self.rect.center = player.rect.center
+        self.rect.center = entity.rect.center
         
     def set_visible(self, visible):
         '''This method uses the visible parameter (boolean), to set image from
@@ -75,7 +75,7 @@ class Hitbox(pygame.sprite.Sprite):
         method.'''
         
         #Position hit box in the center of the player sprite.
-        self.position(self.__player)
+        self.position(self.__entity)
 
    
 #Cria a classe para as balas
