@@ -5,7 +5,7 @@ import time
 
 import classes_space_oddity as cso
 
-# Crie uam função para a fonte
+# Crie uma função para a fonte
 font_name = pygame.font.match_font("arial")
 
 def draw_text(surface, text, size, x, y, color):

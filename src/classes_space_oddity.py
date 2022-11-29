@@ -355,6 +355,81 @@ class Asteroid(Enemy, pygame.sprite.Sprite):
             self.rect.y = random.randrange(-100,-40)
             self.y_speed = random.randrange(1,10)
    
+    
+#Crie uma classe para explosões
+class Explosion(pygame.sprite.Sprite):
+    
+    
+    def __init__(self,center,size):
+        
+        #Crie dois tipos de explosões: as maiores e as menores
+        pygame.sprite.Sprite.__init__(self)
+        explosion_animation = {}
+        explosion_animation["large"] = []
+        explosion_animation["small"] = []
+
+        for i in range (6):
+            filename = f"explosion{i}.png"
+            image = pygame.image.load(os.path.join(img_folder, filename)).convert()
+            image.set_colorkey((255,255,255))
+            
+            large_image = pygame.transform.scale(image,(64,64))
+            explosion_animation["large"].append(large_image)
+            
+            small_image = pygame.transform.scale(image,(32,32))
+            explosion_animation["small"].append(small_image)
+        
+        
+        #Define o tamanho da explosão (grande ou pequena)
+        self.size = size
+        
+        #Define a animação a ser utilizada
+        self.explosion_animation = explosion_animation[self.size]
+        
+        #Define a primeira imagem da animação
+        self.image = self.explosion_animation[0]
+        
+        #Define a posição da explosão
+        self.rect = self.image.get_rect()
+        self.rect.center = center
+        
+        #Define qual frame aparecerá na tela
+        self.frame = 0
+        
+        # Define a última vez que houve mudança de frame
+        self.last_update = pygame.time.get_ticks()
+        
+        #Define a velocidade que os frames aparecem na explosão
+        self.frame_rate = 50
+        
+    #Método para criar a animação    
+    def update(self):
+    
+        now = pygame.time.get_ticks()
+        
+        #Caso o tempo decorrido entre o último frame e agora seja maior que a velocidade dos frames,
+        # atualize o frame exibido
+        if now - self.last_update > self.frame_rate:
+            self.last_update = now
+            self.frame += 1
+            if self.frame == len(self.explosion_animation):
+                self.kill()
+            else:
+                center = self.rect.center
+                self.image = self.explosion_animation[self.frame]
+                self.rect = self.image.get_rect()
+                self.rect.center = center
+    
+    #Método para criar som de explosão  
+    def explosion_sound(self):
+        explosion_sound = pygame.mixer.Sound(
+            os.path.join(sound_folder, "Explosion7.wav"))
+        explosion_sound.play()
+   
+
+   
+    
+   
 #Cria a classe para as naves inimigas             
 class Enemy_ship(Enemy, pygame.sprite.Sprite):    
     #Características iniciais da classe quando ela é iniciada
@@ -481,6 +556,8 @@ class Button():
                 return True
                 
         return False
+    
+    
 
 class InputTextBox():
 

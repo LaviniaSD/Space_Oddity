@@ -45,6 +45,7 @@ clock = pygame.time.Clock()
 background = pygame.image.load(os.path.join(img_folder, "space.png")).convert()
 background_rect = background.get_rect()
 
+
 # Som de background
 pygame.mixer.music.load(os.path.join(sound_folder, "som1.mp3"))
 # pygame.mixer.music.set_volume(0.5)
@@ -236,9 +237,12 @@ class Game():
                 asteroid_score = hit.get_score()
                 player.set_score(asteroid_score) 
                 
-                explosion_sound = pygame.mixer.Sound(
-                    os.path.join(sound_folder, "Explosion7.wav"))
-                explosion_sound.play()
+                #Exibe explosão
+                explosion = cso.Explosion(hit.rect.center,"large")
+                explosion.explosion_sound()
+                all_sprites.add(explosion) 
+                
+
                 new_asteroid = cso.Asteroid()
                 all_sprites.add(new_asteroid)
                 asteroids.add(new_asteroid)
@@ -249,9 +253,10 @@ class Game():
                 enemy_score = hit.get_score()
                 player.set_score(enemy_score) 
                 
-                explosion_sound = pygame.mixer.Sound(
-                    os.path.join(sound_folder, "Explosion7.wav"))
-                explosion_sound.play()
+                #Exibe explosão
+                explosion = cso.Explosion(hit.rect.center,"small")
+                explosion.explosion_sound()
+                all_sprites.add(explosion) 
                 
             #Cria casos de colisão entre jogador e asteroides    
             hits = pygame.sprite.spritecollide(
