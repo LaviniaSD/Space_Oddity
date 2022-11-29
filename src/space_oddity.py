@@ -36,7 +36,7 @@ FPS = 30
 screen = pygame.display.set_mode((WIDTH, HEIGHT), pygame.FULLSCREEN)
 
 # Crie o nome do jogo (exibido no superior da janela)
-pygame.display.set_caption("Nome do jogo")
+pygame.display.set_caption("Space Oddity")
 
 # Relógio para controlar o tempo das ações no jogo
 clock = pygame.time.Clock()
@@ -44,6 +44,7 @@ clock = pygame.time.Clock()
 # Crie um background
 background = pygame.image.load(os.path.join(img_folder, "space.png")).convert()
 background_rect = background.get_rect()
+
 
 # Som de background
 pygame.mixer.music.load(os.path.join(sound_folder, "som1.mp3"))
@@ -211,9 +212,7 @@ class Game():
                     running = False
                     mso.quit_game()
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        player.shoot()
-                    elif event.key == pygame.K_ESCAPE:
+                    if event.key == pygame.K_ESCAPE:
                         # running = False
                         # mso.quit_game()
                         self.pause = self.paused()
@@ -238,10 +237,13 @@ class Game():
                 asteroid_score = hitted_asteroid.get_score()
                 player.set_score(asteroid_score) 
                 
-                explosion_sound = pygame.mixer.Sound(
-                    os.path.join(sound_folder, "Explosion7.wav"))
-                explosion_sound.play()
-                new_asteroid = cso.Asteroids()
+                #Exibe explosão
+                explosion = cso.Explosion(hitted_asteroid.rect.center,"large")
+                explosion.explosion_sound()
+                all_sprites.add(explosion) 
+                
+
+                new_asteroid = cso.Asteroid()
                 all_sprites.add(new_asteroid)
                 asteroids.add(new_asteroid)
                 
@@ -251,9 +253,10 @@ class Game():
                 enemy_score = hitted_enemy_ship.get_score()
                 player.set_score(enemy_score) 
                 
-                explosion_sound = pygame.mixer.Sound(
-                    os.path.join(sound_folder, "Explosion7.wav"))
-                explosion_sound.play()
+                #Exibe explosão
+                explosion = cso.Explosion(hitted_enemy_ship.rect.center,"small")
+                explosion.explosion_sound()
+                all_sprites.add(explosion) 
                 
             #Cria casos de colisão entre jogador e asteroides    
             asteroid_hits_player = pygame.sprite.spritecollide(
@@ -299,8 +302,7 @@ class Game():
             mso.draw_text(screen, f'score: {str(player.get_score())}', 40, WIDTH/2, 10,(255,255,255))
             # Atualiza o jogo
             pygame.display.update()
-            
-    #Encerra o jogo quando o loop acaba    
+        
         pygame.quit()
 
     def paused(self):

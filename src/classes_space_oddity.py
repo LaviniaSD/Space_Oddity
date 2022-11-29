@@ -6,6 +6,8 @@ import pygame
 import random
 import os
 
+from abc import ABC, abstractmethod
+
 # Importa os outros módulos do jogo
 import space_oddity as so
 
@@ -36,7 +38,7 @@ font = pygame.font.SysFont('arial', 20)
 class Hitbox(pygame.sprite.Sprite):
     '''The sprite for the player hit box sprite. Used in bullet detection.'''
     
-    def __init__(self, player):
+    def __init__(self, entity):
         '''This method initializes the sprite using the player sprite.'''
             
         # Call the parent __init__() method
@@ -50,13 +52,13 @@ class Hitbox(pygame.sprite.Sprite):
         #Instance value setting.
         self.image = self.__hitbox
         self.rect = self.image.get_rect()
-        self.__player = player
+        self.__entity = entity
     
-    def position(self, player):
+    def position(self, entity):
         '''This method uses the player sprite instance to reposition itself.'''
         
         #Mutate self center.
-        self.rect.center = player.rect.center
+        self.rect.center = entity.rect.center
         
     def set_visible(self, visible):
         '''This method uses the visible parameter (boolean), to set image from
@@ -73,7 +75,7 @@ class Hitbox(pygame.sprite.Sprite):
         method.'''
         
         #Position hit box in the center of the player sprite.
-        self.position(self.__player)
+        self.position(self.__entity)
 
    
 #Cria a classe para as balas
@@ -95,6 +97,7 @@ class Bullet(pygame.sprite.Sprite):
         #Define a velocidade da bala
         self.x_speed = 0
         self.y_speed = 0
+        
         
 
     #Retorna a posição da bala   
@@ -157,6 +160,9 @@ class Player(pygame.sprite.Sprite):
 
         #Define o score do jogador
         self.score = 0
+        
+        self.shoot_delay = 200
+        self.last_shot = pygame.time.get_ticks()
     
     #Retorna a posição do jogador    
     def get_position(self):
@@ -194,14 +200,31 @@ class Player(pygame.sprite.Sprite):
         
         #Reage a interações do usuário
         keystate = pygame.key.get_pressed()
-        if keystate[pygame.K_LEFT]:
-            self.x_speed = -8
-        if keystate[pygame.K_RIGHT]:
-            self.x_speed = 8
-        if keystate[pygame.K_UP]:
+        if keystate[pygame.K_LEFT] or keystate[pygame.K_a]:
+            if keystate[pygame.K_DOWN] or keystate[pygame.K_s]:
+                self.x_speed = -4
+                self.y_speed = 4
+            elif keystate[pygame.K_UP] or keystate[pygame.K_w]:
+                self.x_speed = -4
+                self.y_speed = -4
+            else:
+                self.x_speed = -8
+        if keystate[pygame.K_RIGHT] or keystate[pygame.K_d]:
+            if keystate[pygame.K_DOWN] or keystate[pygame.K_s]:
+                self.x_speed = 4
+                self.y_speed = 4
+            elif keystate[pygame.K_UP] or keystate[pygame.K_w]:
+                self.x_speed = 4
+                self.y_speed = -4
+            else:
+                self.x_speed = 8
+        if keystate[pygame.K_UP] or keystate[pygame.K_w]:
             self.y_speed = -8
-        if keystate[pygame.K_DOWN]:
+        if keystate[pygame.K_DOWN] or keystate[pygame.K_s]:
             self.y_speed = 8
+        if keystate[pygame.K_SPACE] or keystate[pygame.K_z]:
+            self.shoot()
+            
         self.rect.x += self.x_speed
         self.rect.y += self.y_speed
         
@@ -218,17 +241,52 @@ class Player(pygame.sprite.Sprite):
     
     #Define a função de atirar
     def shoot(self):
-        shoot_sound = pygame.mixer.Sound(os.path.join(so.sound_folder,"Laser_Shoot4.wav"))
-        shoot_sound.set_volume(0.5)
-        bullet = Bullet(self.rect.centerx,self.rect.top)
-        bullet.set_speed(0,-15)
-        so.all_sprites.add(bullet)
-        so.bullets.add(bullet)
-        shoot_sound.play()
-        
+        now = pygame.time.get_ticks()
+        if now - self.last_shot > self.shoot_delay:
+            self.last_shot = now
+            shoot_sound = pygame.mixer.Sound(os.path.join(so.sound_folder,"Laser_Shoot4.wav"))
+            shoot_sound.set_volume(0.5)
+            bullet = Bullet(self.rect.centerx,self.rect.top)
+            bullet.set_speed(0,-15)
+            so.all_sprites.add(bullet)
+            so.bullets.add(bullet)
+            shoot_sound.play()
+
+class Enemy(pygame.sprite.Sprite, ABC):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+
+    @abstractmethod
+    def get_position(self):
+        pass
+
+    @abstractmethod
+    def speed(self):
+        pass
+
+    @abstractmethod
+    def get_position(self):
+        pass
+
+    @abstractmethod
+    def get_is_alive(self):
+        pass
+
+    @abstractmethod
+    def get_score(self):
+        pass
+
+    @abstractmethod
+    def set_is_alive(self):
+        pass
+
+    @abstractmethod
+    def update(self):
+        pass
+
         
 #Cria a classe para os asteroides 
-class Asteroids(pygame.sprite.Sprite):
+class Asteroid(Enemy, pygame.sprite.Sprite):
     #Características iniciais da classe quando ela é iniciada
     def __init__(self):
         
@@ -311,8 +369,83 @@ class Asteroids(pygame.sprite.Sprite):
             self.rect.y = random.randrange(-100,-40)
             self.y_speed = random.randrange(1,10)
    
+    
+#Crie uma classe para explosões
+class Explosion(pygame.sprite.Sprite):
+    
+    
+    def __init__(self,center,size):
+        
+        #Crie dois tipos de explosões: as maiores e as menores
+        pygame.sprite.Sprite.__init__(self)
+        explosion_animation = {}
+        explosion_animation["large"] = []
+        explosion_animation["small"] = []
+
+        for i in range (6):
+            filename = f"explosion{i}.png"
+            image = pygame.image.load(os.path.join(img_folder, filename)).convert()
+            image.set_colorkey((255,255,255))
+            
+            large_image = pygame.transform.scale(image,(64,64))
+            explosion_animation["large"].append(large_image)
+            
+            small_image = pygame.transform.scale(image,(32,32))
+            explosion_animation["small"].append(small_image)
+        
+        
+        #Define o tamanho da explosão (grande ou pequena)
+        self.size = size
+        
+        #Define a animação a ser utilizada
+        self.explosion_animation = explosion_animation[self.size]
+        
+        #Define a primeira imagem da animação
+        self.image = self.explosion_animation[0]
+        
+        #Define a posição da explosão
+        self.rect = self.image.get_rect()
+        self.rect.center = center
+        
+        #Define qual frame aparecerá na tela
+        self.frame = 0
+        
+        # Define a última vez que houve mudança de frame
+        self.last_update = pygame.time.get_ticks()
+        
+        #Define a velocidade que os frames aparecem na explosão
+        self.frame_rate = 50
+        
+    #Método para criar a animação    
+    def update(self):
+    
+        now = pygame.time.get_ticks()
+        
+        #Caso o tempo decorrido entre o último frame e agora seja maior que a velocidade dos frames,
+        # atualize o frame exibido
+        if now - self.last_update > self.frame_rate:
+            self.last_update = now
+            self.frame += 1
+            if self.frame == len(self.explosion_animation):
+                self.kill()
+            else:
+                center = self.rect.center
+                self.image = self.explosion_animation[self.frame]
+                self.rect = self.image.get_rect()
+                self.rect.center = center
+    
+    #Método para criar som de explosão  
+    def explosion_sound(self):
+        explosion_sound = pygame.mixer.Sound(
+            os.path.join(sound_folder, "Explosion7.wav"))
+        explosion_sound.play()
+   
+
+   
+    
+   
 #Cria a classe para as naves inimigas             
-class Enemy_ship(pygame.sprite.Sprite):    
+class Enemy_ship(Enemy, pygame.sprite.Sprite):    
     #Características iniciais da classe quando ela é iniciada
     def __init__(self):
         
@@ -437,6 +570,8 @@ class Button():
                 return True
                 
         return False
+    
+    
 
 class InputTextBox():
 
