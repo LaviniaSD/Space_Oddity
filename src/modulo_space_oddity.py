@@ -20,7 +20,7 @@ def quit_game():
     sys.exit()
     
 def spawn_asteroids(asteroids_group,all_sprites_group):
-    asteroid = cso.Asteroids()
+    asteroid = cso.Asteroid()
     asteroids_group.add(asteroid)
     all_sprites_group.add(asteroid)
     

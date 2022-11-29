@@ -262,7 +262,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
 
         
 #Cria a classe para os asteroides 
-class Asteroids(Enemy, pygame.sprite.Sprite):
+class Asteroid(Enemy, pygame.sprite.Sprite):
     #Características iniciais da classe quando ela é iniciada
     def __init__(self):
         

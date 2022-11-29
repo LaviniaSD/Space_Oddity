@@ -241,7 +241,7 @@ class Game():
                 explosion_sound = pygame.mixer.Sound(
                     os.path.join(sound_folder, "Explosion7.wav"))
                 explosion_sound.play()
-                new_asteroid = cso.Asteroids()
+                new_asteroid = cso.Asteroid()
                 all_sprites.add(new_asteroid)
                 asteroids.add(new_asteroid)
                 
