@@ -200,29 +200,29 @@ class Player(pygame.sprite.Sprite):
         
         #Reage a interações do usuário
         keystate = pygame.key.get_pressed()
-        if keystate[pygame.K_LEFT]:
-            if keystate[pygame.K_DOWN]:
+        if keystate[pygame.K_LEFT] or keystate[pygame.K_a]:
+            if keystate[pygame.K_DOWN] or keystate[pygame.K_s]:
                 self.x_speed = -4
                 self.y_speed = 4
-            elif keystate[pygame.K_UP]:
+            elif keystate[pygame.K_UP] or keystate[pygame.K_w]:
                 self.x_speed = -4
                 self.y_speed = -4
             else:
                 self.x_speed = -8
-        if keystate[pygame.K_RIGHT]:
-            if keystate[pygame.K_DOWN]:
+        if keystate[pygame.K_RIGHT] or keystate[pygame.K_d]:
+            if keystate[pygame.K_DOWN] or keystate[pygame.K_s]:
                 self.x_speed = 4
                 self.y_speed = 4
-            elif keystate[pygame.K_UP]:
+            elif keystate[pygame.K_UP] or keystate[pygame.K_w]:
                 self.x_speed = 4
                 self.y_speed = -4
             else:
                 self.x_speed = 8
-        if keystate[pygame.K_UP]:
+        if keystate[pygame.K_UP] or keystate[pygame.K_w]:
             self.y_speed = -8
-        if keystate[pygame.K_DOWN]:
+        if keystate[pygame.K_DOWN] or keystate[pygame.K_s]:
             self.y_speed = 8
-        if keystate[pygame.K_SPACE]:
+        if keystate[pygame.K_SPACE] or keystate[pygame.K_z]:
             self.shoot()
             
         self.rect.x += self.x_speed
