@@ -161,7 +161,7 @@ class Player(pygame.sprite.Sprite):
         #Define o score do jogador
         self.score = 0
         
-        self.shoot_delay =100
+        self.shoot_delay = 200
         self.last_shot = pygame.time.get_ticks()
     
     #Retorna a posição do jogador    
@@ -201,9 +201,23 @@ class Player(pygame.sprite.Sprite):
         #Reage a interações do usuário
         keystate = pygame.key.get_pressed()
         if keystate[pygame.K_LEFT]:
-            self.x_speed = -8
+            if keystate[pygame.K_DOWN]:
+                self.x_speed = -4
+                self.y_speed = 4
+            elif keystate[pygame.K_UP]:
+                self.x_speed = -4
+                self.y_speed = -4
+            else:
+                self.x_speed = -8
         if keystate[pygame.K_RIGHT]:
-            self.x_speed = 8
+            if keystate[pygame.K_DOWN]:
+                self.x_speed = 4
+                self.y_speed = 4
+            elif keystate[pygame.K_UP]:
+                self.x_speed = 4
+                self.y_speed = -4
+            else:
+                self.x_speed = 8
         if keystate[pygame.K_UP]:
             self.y_speed = -8
         if keystate[pygame.K_DOWN]:
