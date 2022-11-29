@@ -18,40 +18,40 @@ OBS: Todos os botões são derivados de uma classe abstrata de botões, sendo qu
 <h3>Jogo:</h3>
 
 - [ ] Background em movimentação
-- [ ] Música de Fundo
+- [X] Música de Fundo
 
 <h3>Jogador:</h3>
 
-- [ ] Movimentação (4 direções, livre), velocidade
-- [ ] Life (1 life, morreu acabou o jogo)
-- [ ] Hitbox (derivada de uma classe hitbox)
-- [ ] Atirar (Tiros derivados de uma classe Bullet, com cadência e sprites próprios, inerentes ao jogador, dano próprio.
+- [X] Movimentação (4 direções, livre), velocidade
+- [X] Life (1 life, morreu acabou o jogo)
+- [X] Hitbox (derivada de uma classe hitbox)
+- [X] Atirar (Tiros derivados de uma classe Bullet, com cadência e sprites próprios, inerentes ao jogador, dano próprio.
 )
-- [ ] Guardar Pontuação (Calculada pela pontuação dos inimigos que o jogador matou
+- [X] Guardar Pontuação (Calculada pela pontuação dos inimigos que o jogador matou
 )
 
 <h3>Asteroides:</h3>
 
-- [ ] Movimentação Fixa
-- [ ] Spawn Controlado (gerado de forma randômica controlada, a cada x segundos conforme o tempo de jogo (quantidade de iterações))
-- [ ] Tamanhos de hitbox diferentes
-- [ ] Life
-- [ ] Pontuação conforme hitbox
-- [ ] Explodir e gerar asteroides menores
+- [X] Movimentação Fixa
+- [X] Spawn Controlado (gerado de forma randômica controlada, a cada x segundos conforme o tempo de jogo (quantidade de iterações))
+- [X] Tamanhos de hitbox diferentes
+- [X] Life
+- [X] Pontuação conforme hitbox
+- [X] Explodir e gerar asteroides menores
 
 <h3>Naves inimigas:</h3>
 
-- [ ] Movimentação Fixa
-- [ ] Spawn Controlado (gerado de forma randômica controlada, a cada x segundos conforme o tempo de jogo (quantidade de iterações))
-- [ ] Hitbox
-- [ ] Life
-- [ ] Pontuação conforme life da nave
-- [ ] Atira (Configurar cadência, velocidade e padrão de tiro por ângulo)
+- [X] Movimentação Fixa
+- [X] Spawn Controlado (gerado de forma randômica controlada, a cada x segundos conforme o tempo de jogo (quantidade de iterações))
+- [X] Hitbox
+- [X] Life
+- [X] Pontuação conforme life da nave
+- [X] Atira (Configurar cadência, velocidade e padrão de tiro por ângulo)
 
 <h3>Score:</h3>
 
-- [ ] Aumenta conforme o score de jogador
-- [ ] Exibido na tela como tratamento de texto 
+- [X] Aumenta conforme o score de jogador
+- [X] Exibido na tela como tratamento de texto 
 
 <h3>Tela de game over:</h3>
 
