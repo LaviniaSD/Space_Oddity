@@ -6,6 +6,8 @@ import pygame
 import random
 import os
 
+from abc import ABC, abstractmethod
+
 # Importa os outros módulos do jogo
 import space_oddity as so
 
@@ -225,10 +227,42 @@ class Player(pygame.sprite.Sprite):
         so.all_sprites.add(bullet)
         so.bullets.add(bullet)
         shoot_sound.play()
-        
+
+class Enemy(pygame.sprite.Sprite, ABC):
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+
+    @abstractmethod
+    def get_position(self):
+        pass
+
+    @abstractmethod
+    def speed(self):
+        pass
+
+    @abstractmethod
+    def get_position(self):
+        pass
+
+    @abstractmethod
+    def get_is_alive(self):
+        pass
+
+    @abstractmethod
+    def get_score(self):
+        pass
+
+    @abstractmethod
+    def set_is_alive(self):
+        pass
+
+    @abstractmethod
+    def update(self):
+        pass
+
         
 #Cria a classe para os asteroides 
-class Asteroids(pygame.sprite.Sprite):
+class Asteroids(Enemy, pygame.sprite.Sprite):
     #Características iniciais da classe quando ela é iniciada
     def __init__(self):
         
@@ -312,7 +346,7 @@ class Asteroids(pygame.sprite.Sprite):
             self.y_speed = random.randrange(1,10)
    
 #Cria a classe para as naves inimigas             
-class Enemy_ship(pygame.sprite.Sprite):    
+class Enemy_ship(Enemy, pygame.sprite.Sprite):    
     #Características iniciais da classe quando ela é iniciada
     def __init__(self):
         
