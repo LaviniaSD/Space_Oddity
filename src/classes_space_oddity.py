@@ -98,6 +98,7 @@ class Bullet(pygame.sprite.Sprite):
         self.x_speed = 0
         self.y_speed = 0
         
+        
 
     #Retorna a posição da bala   
     def get_position(self):
@@ -159,6 +160,9 @@ class Player(pygame.sprite.Sprite):
 
         #Define o score do jogador
         self.score = 0
+        
+        self.shoot_delay =100
+        self.last_shot = pygame.time.get_ticks()
     
     #Retorna a posição do jogador    
     def get_position(self):
@@ -204,6 +208,9 @@ class Player(pygame.sprite.Sprite):
             self.y_speed = -8
         if keystate[pygame.K_DOWN]:
             self.y_speed = 8
+        if keystate[pygame.K_SPACE]:
+            self.shoot()
+            
         self.rect.x += self.x_speed
         self.rect.y += self.y_speed
         
@@ -220,13 +227,16 @@ class Player(pygame.sprite.Sprite):
     
     #Define a função de atirar
     def shoot(self):
-        shoot_sound = pygame.mixer.Sound(os.path.join(so.sound_folder,"Laser_Shoot4.wav"))
-        shoot_sound.set_volume(0.5)
-        bullet = Bullet(self.rect.centerx,self.rect.top)
-        bullet.set_speed(0,-15)
-        so.all_sprites.add(bullet)
-        so.bullets.add(bullet)
-        shoot_sound.play()
+        now = pygame.time.get_ticks()
+        if now - self.last_shot > self.shoot_delay:
+            self.last_shot = now
+            shoot_sound = pygame.mixer.Sound(os.path.join(so.sound_folder,"Laser_Shoot4.wav"))
+            shoot_sound.set_volume(0.5)
+            bullet = Bullet(self.rect.centerx,self.rect.top)
+            bullet.set_speed(0,-15)
+            so.all_sprites.add(bullet)
+            so.bullets.add(bullet)
+            shoot_sound.play()
 
 class Enemy(pygame.sprite.Sprite, ABC):
     def __init__(self):

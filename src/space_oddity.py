@@ -211,9 +211,7 @@ class Game():
                     running = False
                     mso.quit_game()
                 elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_SPACE:
-                        player.shoot()
-                    elif event.key == pygame.K_ESCAPE:
+                    if event.key == pygame.K_ESCAPE:
                         # running = False
                         # mso.quit_game()
                         self.pause = self.paused()
@@ -301,7 +299,7 @@ class Game():
             pygame.display.update()
             
         #Encerra o jogo quando o loop acaba    
-        # pygame.quit()
+        pygame.quit()
 
     def paused(self):
         self.pause = True
