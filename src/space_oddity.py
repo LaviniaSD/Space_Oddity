@@ -9,6 +9,7 @@ import os
 import pygame
 import random
 import sys
+import math
 
 import classes_space_oddity as cso
 import modulo_space_oddity as mso
@@ -42,8 +43,10 @@ pygame.display.set_caption("Space Oddity")
 clock = pygame.time.Clock()
 
 # Crie um background
-background = pygame.image.load(os.path.join(img_folder, "space.png")).convert()
-background_rect = background.get_rect()
+background = pygame.image.load(os.path.join(img_folder, "space.jpg"))
+
+# Armazene a altura desse background
+background_height = background.get_height()
 
 
 # Som de background
@@ -187,15 +190,26 @@ class Game():
             pygame.display.flip()
 
     def run_game(self):
+        
+        
         # Atribui a classe player a uma variável
         player = cso.Player()
         player.hitbox = cso.Hitbox(player)
+        
         # Adiciona player aos grupo de sprites
         all_sprites.add(player, player.hitbox)
+        
         # testButton = cso.Button(color=cso.WHITE, x=200, y=200, width=200, height=200, size=20, text="ABCASKLDASKLDNASD")
+        
         #Cria uma marcação de tempo inicial para spawning
         start_asteroids = pygame.time.get_ticks()
         start_enemies = pygame.time.get_ticks()
+        
+        #Crie uma variável para o deslizamento da tela
+        scrolling = 0
+        
+        #Crie uma vaariável para a quantidade de painés necessárias no deslizamento da tela
+        panels = math.ceil(HEIGHT/background_height)+2
        
         # Loop para o jogo
         running = True
@@ -287,11 +301,15 @@ class Game():
             # Defina a imagem de fundo da tela
             screen.fill((0, 0, 0))
 
-            # Adiciona a imagem de fundo
-            screen.blit(background, background_rect)
-
-            # Atualize as imagens dos objetos quando ocorrerem mudanças
-            pygame.display.flip()
+            #Mova o background
+            for i in range(panels):
+                screen.blit(background,(0,i*background_height+scrolling-background_height))
+            
+            scrolling += 5
+            
+            if abs(scrolling)>background_height:
+                scrolling = 0
+            
 
             # Desenha os sprites na tela
             all_sprites.draw(screen)
@@ -300,6 +318,10 @@ class Game():
 
             #Adiciona a pontuação no topo da tela
             mso.draw_text(screen, f'score: {str(player.get_score())}', 40, WIDTH/2, 10,(255,255,255))
+            
+            # Atualize as imagens dos objetos quando ocorrerem mudanças
+            pygame.display.flip()
+            
             # Atualiza o jogo
             pygame.display.update()
         

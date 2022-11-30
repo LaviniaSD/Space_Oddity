@@ -5,6 +5,7 @@
 import pygame
 import random
 import os
+import math
 
 from abc import ABC, abstractmethod
 
@@ -110,7 +111,7 @@ class Bullet(pygame.sprite.Sprite):
         return self.x_speed,self.y_speed
     
 
-    #Muda a posição da bala
+    #Muda a velocidade da bala
     def set_speed(self,new_speed_x,new_speed_y):
         self.x_speed = new_speed_x
         self.y_speed = new_speed_y
@@ -142,7 +143,7 @@ class Player(pygame.sprite.Sprite):
 
         #Cria a reta e o círculo para posicionar a classe
         self.rect = self.image.get_rect()
-        self.radius = 28
+        self.radius = 32
         
         #Orienta a posição inicial do jogador
         self.rect.centerx = so.WIDTH/2
@@ -152,8 +153,8 @@ class Player(pygame.sprite.Sprite):
         self.x_speed = 0
         self.y_speed = 0
 
+        
         self.focus = False
-
 
         #Define se o jogador está vivo
         self.is_alive = True
@@ -161,7 +162,10 @@ class Player(pygame.sprite.Sprite):
         #Define o score do jogador
         self.score = 0
         
+        #Define o intervalo entre tiros
         self.shoot_delay = 200
+        
+        #Define o tempo desde o último tiro
         self.last_shot = pygame.time.get_ticks()
     
     #Retorna a posição do jogador    
@@ -180,6 +184,10 @@ class Player(pygame.sprite.Sprite):
     def get_score(self):
         return self.score
     
+    #Retorna o score do jogador 
+    def get_shoot_delay(self):
+        return self.shoot_delay
+    
     #Altera a propriedade is_alive
     def set_is_alive(self,life_status):
         self.is_alive = life_status
@@ -190,6 +198,11 @@ class Player(pygame.sprite.Sprite):
     #Altera a propriedade score
     def set_score(self,new_score):
         self.score += new_score
+        
+    #Altera a propriedade shoot_delay
+    def shoot_delay(self,new_shoot_delay):
+        self.shoot_delay = new_shoot_delay
+        return self.shoot_delay
     
     #Atualiza a nave de acordo com os comandos do jogador   
     def update(self):
@@ -243,14 +256,20 @@ class Player(pygame.sprite.Sprite):
     def shoot(self):
         now = pygame.time.get_ticks()
         if now - self.last_shot > self.shoot_delay:
+            #Muda o horário do último tiro
             self.last_shot = now
+            
+            #Reproduz som de tiro
             shoot_sound = pygame.mixer.Sound(os.path.join(so.sound_folder,"Laser_Shoot4.wav"))
             shoot_sound.set_volume(0.5)
+            shoot_sound.play()
+            
+            #Dispara a balas
             bullet = Bullet(self.rect.centerx,self.rect.top)
             bullet.set_speed(0,-15)
             so.all_sprites.add(bullet)
             so.bullets.add(bullet)
-            shoot_sound.play()
+            
 
 class Enemy(pygame.sprite.Sprite, ABC):
     def __init__(self):
@@ -312,7 +331,8 @@ class Asteroid(Enemy, pygame.sprite.Sprite):
 
         #Cria a reta e o círculo para posicionar a classe
         self.rect = self.image.get_rect()
-        self.radius = int(self.rect.width * 0.85 / 2)
+        self.radius = int(self.rect.width * 0.90 / 2)
+        print(self.radius)
         
         #Orienta a posição inicial do asteroide
         self.rect.x = random.randrange(so.WIDTH - self.rect.width)
@@ -338,17 +358,14 @@ class Asteroid(Enemy, pygame.sprite.Sprite):
     def speed(self):
         return self.x_speed,self.y_speed
     
-
     #Retorna se o asteroide está "vivo"
     def get_is_alive(self):
         return self.is_alive
-    
 
     #Retorna o score que o asteroide dará ao jogador quando destruído
     def get_score(self):
         return self.score
     
-
     #Altera a propriedade is_alive
     def set_is_alive(self,life_status):
         self.is_alive = life_status
@@ -385,7 +402,7 @@ class Explosion(pygame.sprite.Sprite):
         for i in range (6):
             filename = f"explosion{i}.png"
             image = pygame.image.load(os.path.join(img_folder, filename)).convert()
-            image.set_colorkey((255,255,255))
+            image.set_colorkey((0,0,0))
             
             large_image = pygame.transform.scale(image,(64,64))
             explosion_animation["large"].append(large_image)
@@ -441,9 +458,7 @@ class Explosion(pygame.sprite.Sprite):
         explosion_sound.play()
    
 
-   
-    
-   
+
 #Cria a classe para as naves inimigas             
 class Enemy_ship(Enemy, pygame.sprite.Sprite):    
     #Características iniciais da classe quando ela é iniciada
@@ -649,3 +664,9 @@ class InputTextBox():
 
         # Desenhe o texto na caixa de texto
         screen.blit(self.text_surface, (self.rect.x+5, self.rect.y+5))
+        
+
+        
+    
+    
+    
