@@ -68,6 +68,9 @@ bullets = pygame.sprite.Group()
 # Crie um grupo para as balas dos inimigos
 enemies_bullets = pygame.sprite.Group()
 
+# Crie um grupo para os bônus
+powers = pygame.sprite.Group()
+
 class Game():
 
     def __init__(self):
@@ -191,7 +194,6 @@ class Game():
 
     def run_game(self):
         
-        
         # Atribui a classe player a uma variável
         player = cso.Player()
         player.hitbox = cso.Hitbox(player)
@@ -216,9 +218,24 @@ class Game():
         
         pygame.mixer.music.play(loops=-1)
         
+        #Estabeleça o nível antes do jogo iniciar
+        level = 1
+        
+        start_level_time = pygame.time.get_ticks()
+        
+        # Altere o nível de 5 em 5 segundos
         while running:
+            level_delay = pygame.time.get_ticks()
+            
+            #Adicione um nível
+            if level_delay - start_level_time   > 5000:
+                start_level_time = pygame.time.get_ticks()
+                level += 1
+            
+            
             # Faça o jogo funcionar com a quantidade de frames por segundo estabelecidas
             clock.tick(FPS)
+            
             # Faça o jogo reagir a eventos externos
             for event in pygame.event.get():
                 # Permita que o usuário saia do jogo
@@ -230,18 +247,26 @@ class Game():
                         # running = False
                         # mso.quit_game()
                         self.pause = self.paused()
+
             # Atualiza os sprites
             all_sprites.update()
             
             
-            #spawna asteroides em intervalos de 3 segundos
+            # Gera bônus aleatoriamente na tela
+            if random.random() < 0.005:
+                power = cso.Power()
+                powers.add(power)
+                all_sprites.add(power)
+
+                
+            #spawna asteroides em intervalos de 3 ou menos segundos
             now = pygame.time.get_ticks()
-            if now - start_asteroids > 3000 :
+            if now - start_asteroids > (3000 - 10*level) :
                 start_asteroids = now
                 mso.spawn_asteroids(asteroids,all_sprites)
         
-            #spawna naves inimigas em intervalos de 4 segundos
-            if now - start_enemies > 4000:
+            #spawna naves inimigas em intervalos de 4 ou menos segundos
+            if now - start_enemies > (4000 - 5*level):
                 start_enemies = now
                 mso.spawn_enemy_ships(enemy_ships,all_sprites)
 
@@ -249,14 +274,15 @@ class Game():
             bullet_hits_asteroid = pygame.sprite.groupcollide(asteroids, bullets, True, True)
             for hitted_asteroid in bullet_hits_asteroid:
                 asteroid_score = hitted_asteroid.get_score()
-                player.set_score(asteroid_score) 
+                player_old_score = player.get_score()
+                player.set_score(player_old_score+asteroid_score) 
                 
                 #Exibe explosão
                 explosion = cso.Explosion(hitted_asteroid.rect.center,"large")
                 explosion.explosion_sound()
                 all_sprites.add(explosion) 
                 
-
+                # Adiciona um novo asteroide à tela
                 new_asteroid = cso.Asteroid()
                 all_sprites.add(new_asteroid)
                 asteroids.add(new_asteroid)
@@ -265,7 +291,8 @@ class Game():
             bullet_hits_enemy_ship = pygame.sprite.groupcollide(enemy_ships,bullets, True, True)
             for hitted_enemy_ship in bullet_hits_enemy_ship:
                 enemy_score = hitted_enemy_ship.get_score()
-                player.set_score(enemy_score) 
+                player_old_score = player.get_score()
+                player.set_score(player_old_score+enemy_score) 
                 
                 #Exibe explosão
                 explosion = cso.Explosion(hitted_enemy_ship.rect.center,"small")
@@ -274,21 +301,63 @@ class Game():
                 
             #Cria casos de colisão entre jogador e asteroides    
             asteroid_hits_player = pygame.sprite.spritecollide(
-                player.hitbox, asteroids, False, pygame.sprite.collide_circle)
+                player.hitbox, asteroids, True, pygame.sprite.collide_circle)
             if asteroid_hits_player:
-                running = mso.player_dies(running) 
+                #Exibe explosão
+                explosion = cso.Explosion(player.rect.center,"large")
+                explosion.explosion_sound()
+                all_sprites.add(explosion) 
+                
+                #Diminui a vida do jogador
+                life = player.get_life()
+                damage = 1
+                player.set_life(life - damage)
+                if player.get_life() <= 0:
+                    running =  mso.player_dies(running) 
                 
             #Cria casos de colisão entre balas do inimigo e o jogador    
             enemy_shoots_player = pygame.sprite.spritecollide(
-                player.hitbox, enemies_bullets, False, pygame.sprite.collide_circle)
+                player.hitbox, enemies_bullets, True, pygame.sprite.collide_circle)
             if enemy_shoots_player:
-                running = mso.player_dies(running) 
+                #Exibe explosão
+                explosion = cso.Explosion(player.rect.center,"large")
+                explosion.explosion_sound()
+                all_sprites.add(explosion) 
+                
+                #Diminui a vida do jogador
+                life = player.get_life()
+                damage = 1
+                player.set_life(life - damage)
+                if player.get_life() <= 0:
+                    running = mso.player_dies(running)  
                 
             #Cria casos de colisão entre nave inimiga e o jogador    
             enemy_hits_player = pygame.sprite.spritecollide(
                 player.hitbox, enemy_ships, False, pygame.sprite.collide_circle)
             if enemy_hits_player:
-                running = mso.player_dies(running) 
+                #Exibe explosão
+                explosion = cso.Explosion(player.rect.center,"large")
+                explosion.explosion_sound()
+                all_sprites.add(explosion) 
+                
+                #Diminui a vida do jogador
+                life = player.get_life()
+                damage = 1
+                player.set_life(life - damage)
+                if player.get_life() <= 0:
+                    running =  mso.player_dies(running) 
+                
+            
+            #Cria casos de colisão entre bônus e o jogador
+            player_hits_bonus = pygame.sprite.spritecollide(player.hitbox, powers, True, pygame.sprite.collide_circle)
+            
+            for hitted_bonus in player_hits_bonus:
+                if hitted_bonus.type == 'shield':
+                    initial_lifes = player.get_life()
+                    player.set_life(initial_lifes + 1)
+                if hitted_bonus.type == 'gun':
+                    player.powerup()
+               
 
             keys_pressed = pygame.key.get_pressed()
 
@@ -325,7 +394,7 @@ class Game():
             # Atualiza o jogo
             pygame.display.update()
         
-        pygame.quit()
+        mso.quit_game()
 
     def paused(self):
         self.pause = True

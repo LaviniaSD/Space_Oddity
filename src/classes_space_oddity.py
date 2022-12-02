@@ -6,6 +6,8 @@ import pygame
 import random
 import os
 import math
+import time
+from threading import Timer 
 
 from abc import ABC, abstractmethod
 
@@ -99,18 +101,15 @@ class Bullet(pygame.sprite.Sprite):
         self.x_speed = 0
         self.y_speed = 0
         
-        
-
+    
     #Retorna a posição da bala   
     def get_position(self):
         return self.rect.x,self.rect.y
     
-
     #Retorna a velocidade da bala     
     def speed(self):
         return self.x_speed,self.y_speed
     
-
     #Muda a velocidade da bala
     def set_speed(self,new_speed_x,new_speed_y):
         self.x_speed = new_speed_x
@@ -124,6 +123,8 @@ class Bullet(pygame.sprite.Sprite):
         
         #Caso a bala ultrapasse as bordas, a elimine.
         if self.rect.bottom < 0:
+            self.kill()
+        elif self.rect.bottom > so.HEIGHT:
             self.kill()
 
 
@@ -157,7 +158,7 @@ class Player(pygame.sprite.Sprite):
         self.focus = False
 
         #Define se o jogador está vivo
-        self.is_alive = True
+        self.life = 1
 
         #Define o score do jogador
         self.score = 0
@@ -167,6 +168,11 @@ class Player(pygame.sprite.Sprite):
         
         #Define o tempo desde o último tiro
         self.last_shot = pygame.time.get_ticks()
+        
+        self.power = 1
+        
+        self.power_time = pygame.time.get_ticks()
+        
     
     #Retorna a posição do jogador    
     def get_position(self):
@@ -177,8 +183,8 @@ class Player(pygame.sprite.Sprite):
         return self.x_speed,self.y_speed
     
     #Retorna se o jogador está vivo
-    def get_is_alive(self):
-        return self.is_alive
+    def get_life(self):
+        return self.life
     
     #Retorna o score do jogador 
     def get_score(self):
@@ -188,24 +194,26 @@ class Player(pygame.sprite.Sprite):
     def get_shoot_delay(self):
         return self.shoot_delay
     
+    
     #Altera a propriedade is_alive
-    def set_is_alive(self,life_status):
-        self.is_alive = life_status
-        
-        if self.is_alive == False:
-            self.kill()
+    def set_life(self,new_life):
+        self.life = new_life
+
       
     #Altera a propriedade score
     def set_score(self,new_score):
-        self.score += new_score
+        self.score = new_score
         
     #Altera a propriedade shoot_delay
-    def shoot_delay(self,new_shoot_delay):
+    def set_shoot_delay(self,new_shoot_delay):
         self.shoot_delay = new_shoot_delay
-        return self.shoot_delay
     
     #Atualiza a nave de acordo com os comandos do jogador   
     def update(self):
+        
+        if self.power >= 2 and pygame.time.get_ticks() - self.power_time > 10000:
+            self.power -= 1
+            self.power_time = pygame.time.get_ticks()
         
         #Seta a velocidade como 0
         self.x_speed = 0
@@ -259,16 +267,37 @@ class Player(pygame.sprite.Sprite):
             #Muda o horário do último tiro
             self.last_shot = now
             
-            #Reproduz som de tiro
-            shoot_sound = pygame.mixer.Sound(os.path.join(so.sound_folder,"Laser_Shoot4.wav"))
-            shoot_sound.set_volume(0.5)
-            shoot_sound.play()
-            
-            #Dispara a balas
-            bullet = Bullet(self.rect.centerx,self.rect.top)
-            bullet.set_speed(0,-15)
-            so.all_sprites.add(bullet)
-            so.bullets.add(bullet)
+            if self.power == 1:
+                #Reproduz som de tiro
+                shoot_sound = pygame.mixer.Sound(os.path.join(so.sound_folder,"Laser_Shoot4.wav"))
+                shoot_sound.set_volume(0.5)
+                shoot_sound.play()
+                
+                #Dispara a balas
+                bullet = Bullet(self.rect.centerx,self.rect.top)
+                bullet.set_speed(0,-15)
+                so.all_sprites.add(bullet)
+                so.bullets.add(bullet)
+            if self.power >= 2:
+                #Reproduz som de tiro
+                shoot_sound = pygame.mixer.Sound(os.path.join(so.sound_folder,"Laser_Shoot4.wav"))
+                shoot_sound.set_volume(0.5)
+                shoot_sound.play()
+                
+                #Dispara a balas
+                bullet1 = Bullet(self.rect.left,self.rect.centery)
+                bullet2 = Bullet(self.rect.right,self.rect.centery)
+                bullet1.set_speed(0,-15)
+                bullet2.set_speed(0,-15)
+                so.all_sprites.add(bullet1)
+                so.bullets.add(bullet1)
+                so.all_sprites.add(bullet2)
+                so.bullets.add(bullet2)
+        
+    
+    def powerup(self):
+        self.power += 1
+        self.power_time = pygame.time.get_ticks()
             
 
 class Enemy(pygame.sprite.Sprite, ABC):
@@ -332,7 +361,7 @@ class Asteroid(Enemy, pygame.sprite.Sprite):
         #Cria a reta e o círculo para posicionar a classe
         self.rect = self.image.get_rect()
         self.radius = int(self.rect.width * 0.90 / 2)
-        print(self.radius)
+        
         
         #Orienta a posição inicial do asteroide
         self.rect.x = random.randrange(so.WIDTH - self.rect.width)
@@ -365,6 +394,9 @@ class Asteroid(Enemy, pygame.sprite.Sprite):
     #Retorna o score que o asteroide dará ao jogador quando destruído
     def get_score(self):
         return self.score
+    
+    def set_score(self,new_score):
+        self.score = new_score
     
     #Altera a propriedade is_alive
     def set_is_alive(self,life_status):
@@ -489,6 +521,11 @@ class Enemy_ship(Enemy, pygame.sprite.Sprite):
         #Define o score que a nave inimiga dá ao jogador quando destruida
         self.score = 100
         
+        #Define o intervalo entre tiros
+        self.shoot_delay = 50
+        
+        #Define o tempo desde o último tiro
+        self.last_shot = pygame.time.get_ticks()
 
     #Retorna a posição da nave inimiga    
     def get_position(self):
@@ -520,6 +557,9 @@ class Enemy_ship(Enemy, pygame.sprite.Sprite):
 
         if self.is_alive == False:
             self.kill()
+            
+    def set_score(self,new_score):
+        self.score = new_score
         
     #Permite que a nave inimiga atire
     def shoot(self,speed_x,speed_y):
@@ -527,15 +567,60 @@ class Enemy_ship(Enemy, pygame.sprite.Sprite):
         shoot_sound.set_volume(0.5)
         bullet = Bullet(self.rect.centerx,self.rect.top)
         bullet.set_speed(speed_x, speed_y) 
-        
         so.all_sprites.add(bullet)
         so.enemies_bullets.add(bullet)
         shoot_sound.play()
         
+    def enemy_shoots(self):
+        for i in range (5):
+            x_speed= random.randint(-10,10)
+            y_speed= random.randint(10,10)
+            self.shoot(x_speed, y_speed)
+            time.sleep(0.001)
+           
     #Permite que a nave inimiga se movimente   
     def update(self):
         self.y_speed = -1
         self.rect.y += self.y_speed
+
+#Crie a classe para os bônus (poderes)
+class Power(pygame.sprite.Sprite):
+    #Características iniciais da classe quando ela é iniciada
+    def __init__(self):
+        pygame.sprite.Sprite.__init__(self)
+        powers_images = {}
+        
+        #Adicione 2 tipos de bônus às opções
+        powers_images['shield'] = pygame.image.load(os.path.join(so.img_folder,"shield.png")).convert()
+        powers_images['gun'] = pygame.image.load(os.path.join(so.img_folder,"star.png")).convert()
+        
+        
+        self.type = random.choice(['shield','gun'])
+        
+        # Defina a imagem
+        self.image = powers_images[self.type]
+        self.image = pygame.transform.scale(self.image, (32, 32))
+        self.image.set_colorkey((0,0,0))
+        
+        #Define a hitbox 
+        self.hitbox = None
+
+        #Cria a reta para posicionar a classe
+        self.rect = self.image.get_rect()
+        
+        
+        #Orienta a posição inicial do bônus
+        self.rect.x = random.randrange(so.WIDTH - self.rect.width)
+        self.rect.y = random.randrange(so.HEIGHT - self.rect.height)
+
+        # Desaparece após 3 segundos na tela
+        Timer(3, self.disappear).start()
+
+    #Elimina o bônus
+    def disappear(self):
+        self.kill()
+     
+
 
 class Button():
 
