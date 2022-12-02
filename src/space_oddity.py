@@ -1,6 +1,5 @@
-'''Módulo Principal do jogo
-Nesse módulo será executado o loop principal do jogo
-'''
+"""Esse módulo contém a classe para o loop principal do jogo.
+"""
 
 # Música tema de FoxSynergy
 # Importe as bibliotecas necessárias
@@ -51,7 +50,7 @@ background_height = background.get_height()
 
 # Som de background
 pygame.mixer.music.load(os.path.join(sound_folder, "som1.mp3"))
-# pygame.mixer.music.set_volume(0.5)
+pygame.mixer.music.set_volume(0.5)
 
 # Crie um grupo para todos os sprites
 all_sprites = pygame.sprite.Group()
@@ -71,9 +70,11 @@ enemies_bullets = pygame.sprite.Group()
 # Crie um grupo para os bônus
 powers = pygame.sprite.Group()
 
+#Crie uma classe para o jogo
 class Game():
-
+    
     def __init__(self):
+
         self.in_menu = True
         self.game_is_running = False
         self.pause = False
@@ -116,7 +117,7 @@ class Game():
                     scores_data = {}
         except FileNotFoundError:
             scores_data = {"scores": []} # TODO: Conferir qual seria a fórmula de um arquivo vazio
-        sorted_scores = sorted(scores_data.items(), key=lambda x: x[1]['points'], reverse=True)
+        sorted_scores = sorted(scores_data.items(), key=lambda x: x[1]["points"], reverse=True)
 
         # Inicia um loop para o menu
         while self.in_menu:
@@ -194,6 +195,12 @@ class Game():
 
     def run_game(self):
         
+        #Crie uma variável para o deslizamento da tela
+        scrolling = 0
+        
+        #Crie uma variável para a quantidade de painés necessários no deslizamento da tela
+        panels = math.ceil(HEIGHT/background_height)+2
+        
         # Atribui a classe player a uma variável
         player = cso.Player()
         player.hitbox = cso.Hitbox(player)
@@ -205,17 +212,9 @@ class Game():
         
         #Cria uma marcação de tempo inicial para spawning
         start_asteroids = pygame.time.get_ticks()
-        start_enemies = pygame.time.get_ticks()
+        start_enemies_ships = pygame.time.get_ticks()
         
-        #Crie uma variável para o deslizamento da tela
-        scrolling = 0
-        
-        #Crie uma vaariável para a quantidade de painés necessárias no deslizamento da tela
-        panels = math.ceil(HEIGHT/background_height)+2
-       
-        # Loop para o jogo
-        running = True
-        
+        #Reproduza a música de fundo infinitamente
         pygame.mixer.music.play(loops=-1)
         
         #Estabeleça o nível antes do jogo iniciar
@@ -223,18 +222,22 @@ class Game():
         
         start_level_time = pygame.time.get_ticks()
         
-        # Altere o nível de 5 em 5 segundos
+        # Loop para o jogo
+        running = True
+        
         while running:
+            
+            # Faça o jogo funcionar com a quantidade de frames por segundo estabelecidas
+            clock.tick(FPS)
+            
+            #Recebe a quantidade de tempo decorrida desde o início do jogo
             level_delay = pygame.time.get_ticks()
             
-            #Adicione um nível
+            #Adicione um nível de 5 em 5 segundos
             if level_delay - start_level_time   > 5000:
                 start_level_time = pygame.time.get_ticks()
                 level += 1
             
-            
-            # Faça o jogo funcionar com a quantidade de frames por segundo estabelecidas
-            clock.tick(FPS)
             
             # Faça o jogo reagir a eventos externos
             for event in pygame.event.get():
@@ -259,15 +262,15 @@ class Game():
                 all_sprites.add(power)
 
                 
-            #spawna asteroides em intervalos de 3 ou menos segundos
+            #Spawna asteroides em intervalos de 3 ou menos segundos (dependendo do nível)
             now = pygame.time.get_ticks()
             if now - start_asteroids > (3000 - 10*level) :
                 start_asteroids = now
                 mso.spawn_asteroids(asteroids,all_sprites)
         
             #spawna naves inimigas em intervalos de 4 ou menos segundos
-            if now - start_enemies > (4000 - 5*level):
-                start_enemies = now
+            if now - start_enemies_ships > (4000 - 5*level):
+                start_enemies_ships = now
                 mso.spawn_enemy_ships(enemy_ships,all_sprites)
 
             #Cria casos de colisão entre balas do jogador e asteroides
@@ -352,11 +355,13 @@ class Game():
             player_hits_bonus = pygame.sprite.spritecollide(player.hitbox, powers, True, pygame.sprite.collide_circle)
             
             for hitted_bonus in player_hits_bonus:
-                if hitted_bonus.type == 'shield':
+                #Caso seja um escudo, adicione vidas ao a jogador
+                if hitted_bonus.type == "shield":
                     initial_lifes = player.get_life()
                     player.set_life(initial_lifes + 1)
-                if hitted_bonus.type == 'gun':
-                    player.powerup()
+                #Caso seja uma arma, adicione uma arma mais poderosa ao jogador
+                if hitted_bonus.type == "gun":
+                    player.gain_powerup()
                
 
             keys_pressed = pygame.key.get_pressed()
@@ -386,7 +391,10 @@ class Game():
             # Insere o score na tela
 
             #Adiciona a pontuação no topo da tela
-            mso.draw_text(screen, f'score: {str(player.get_score())}', 40, WIDTH/2, 10,(255,255,255))
+            mso.draw_text(screen, f"Score: {str(player.get_score())}", 40, WIDTH/2, 10,(255,255,255))
+            
+            #Adiciona os escudos no cando superior direito da tela
+            mso.draw_text(screen, f"Shields: {str(player.get_life()-1)}", 20, WIDTH * (7/8), 10,(255,255,255))
             
             # Atualize as imagens dos objetos quando ocorrerem mudanças
             pygame.display.flip()

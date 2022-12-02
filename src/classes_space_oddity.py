@@ -1,11 +1,10 @@
-'''Nesse módulo estão inclusas as classes para o jogo
-'''
+"""Nesse módulo estão inclusas as classes para o jogo.
+"""
 
 # Importa as bibliotecas necessárias
 import pygame
 import random
 import os
-import math
 import time
 from threading import Timer 
 
@@ -36,13 +35,13 @@ MAGENTA = (194,9,84)
 pygame.init()
 
 #Define a fonte utilizada no jogo
-font = pygame.font.SysFont('arial', 20)
+font = pygame.font.SysFont("arcade", 20)
 
 class Hitbox(pygame.sprite.Sprite):
-    '''The sprite for the player hit box sprite. Used in bullet detection.'''
+    """The sprite for the player hit box sprite. Used in bullet detection."""
     
     def __init__(self, entity):
-        '''This method initializes the sprite using the player sprite.'''
+        """This method initializes the sprite using the player sprite."""
             
         # Call the parent __init__() method
         pygame.sprite.Sprite.__init__(self)
@@ -58,14 +57,14 @@ class Hitbox(pygame.sprite.Sprite):
         self.__entity = entity
     
     def position(self, entity):
-        '''This method uses the player sprite instance to reposition itself.'''
+        """This method uses the player sprite instance to reposition itself."""
         
         #Mutate self center.
         self.rect.center = entity.rect.center
         
     def set_visible(self, visible):
-        '''This method uses the visible parameter (boolean), to set image from
-        visible to invisible.'''
+        """This method uses the visible parameter (boolean), to set image from
+        visible to invisible."""
         
         #Change image depending on if visible
         if visible:
@@ -74,8 +73,8 @@ class Hitbox(pygame.sprite.Sprite):
             self.image = self.__temp
 
     def update(self):
-        '''This sprite updates the position of the hitbox sprite. using a
-        method.'''
+        """This sprite updates the position of the hitbox sprite. using a
+        method."""
         
         #Position hit box in the center of the player sprite.
         self.position(self.__entity)
@@ -83,8 +82,24 @@ class Hitbox(pygame.sprite.Sprite):
    
 #Cria a classe para as balas
 class Bullet(pygame.sprite.Sprite):
+    
     #Características iniciais da classe quando ela é iniciada
     def __init__(self,x,y):
+        """Função inicial para a bala
+        
+
+        Parameters
+        ----------
+        x : int
+            Coordenada do surgimento da bala no eixo x.
+        y : int
+            Coordenada do surgimento da bala no eixo y.
+
+        Returns
+        -------
+        None.
+
+        """
         
         #Adiciona uma imagem
         pygame.sprite.Sprite.__init__(self)
@@ -103,13 +118,16 @@ class Bullet(pygame.sprite.Sprite):
         
     
     #Retorna a posição da bala   
+    #@property
     def get_position(self):
         return self.rect.x,self.rect.y
     
+    #@property
     #Retorna a velocidade da bala     
     def speed(self):
         return self.x_speed,self.y_speed
     
+    #@speed.setter
     #Muda a velocidade da bala
     def set_speed(self,new_speed_x,new_speed_y):
         self.x_speed = new_speed_x
@@ -169,45 +187,63 @@ class Player(pygame.sprite.Sprite):
         #Define o tempo desde o último tiro
         self.last_shot = pygame.time.get_ticks()
         
+        #Define o poder(quantidade de tiros)
         self.power = 1
         
+        #Define quando o poder iniciou 
         self.power_time = pygame.time.get_ticks()
         
-    
     #Retorna a posição do jogador    
+    #@property
     def get_position(self):
         return self.rect.x,self.rect.y
     
     #Retorna a velocidade do jogador    
+    #@property
     def speed(self):
         return self.x_speed,self.y_speed
     
     #Retorna se o jogador está vivo
+    #@property
     def get_life(self):
         return self.life
     
     #Retorna o score do jogador 
+    #@property
     def get_score(self):
         return self.score
     
     #Retorna o score do jogador 
+    #@property
     def get_shoot_delay(self):
         return self.shoot_delay
     
+    #Retorna o score do jogador 
+    #@property
+    def get_power(self):
+        return self.power
     
-    #Altera a propriedade is_alive
+    #Retorna o score do jogador 
+    #@property
+    def get_power_time(self):
+        return self.power_time
+    
+    #Altera a propriedade life
+    #@speed.setter
+    def set_speed(self,new_speed_x,new_speed_y):
+        self.x_speed = new_speed_x
+        self.x_speed = new_speed_y
+    
+    #Altera a propriedade life
+    #@get_life.setter
     def set_life(self,new_life):
         self.life = new_life
 
-      
     #Altera a propriedade score
+    #@get_score.setter
     def set_score(self,new_score):
         self.score = new_score
         
-    #Altera a propriedade shoot_delay
-    def set_shoot_delay(self,new_shoot_delay):
-        self.shoot_delay = new_shoot_delay
-    
     #Atualiza a nave de acordo com os comandos do jogador   
     def update(self):
         
@@ -295,7 +331,7 @@ class Player(pygame.sprite.Sprite):
                 so.bullets.add(bullet2)
         
     
-    def powerup(self):
+    def gain_powerup(self):
         self.power += 1
         self.power_time = pygame.time.get_ticks()
             
@@ -346,13 +382,31 @@ class Asteroid(Enemy, pygame.sprite.Sprite):
         asteroids_images = []
                             
         for asteroid in asteroids_list:
-            asteroids_images.append(
-                pygame.image.load(os.path.join(so.img_folder,asteroid)
-                                  ).convert())
+            if asteroid == "asteroid.png":
+                sprite = pygame.image.load(
+                    os.path.join(so.img_folder,asteroid)
+                    ).convert()
+                sprite = pygame.transform.scale(sprite, (120, 120))
+
+                asteroids_images.append(sprite)
+            elif asteroid == "asteroid2.png":
+                sprite = pygame.image.load(
+                    os.path.join(so.img_folder,asteroid)
+                    ).convert()
+                sprite = pygame.transform.scale(sprite, (60, 60))
+
+                asteroids_images.append(sprite)
+            else:
+                sprite = pygame.image.load(
+                    os.path.join(so.img_folder,asteroid)
+                    ).convert()
+                sprite = pygame.transform.scale(sprite, (30, 30))
+
+                asteroids_images.append(sprite)
         
         #Define a imagem do asteroide  
         self.image = random.choice(asteroids_images)
-        self.image = pygame.transform.scale2x(self.image)
+        #self.image = pygame.transform.scale2x(self.image)
         self.image.set_colorkey((0,0,0))
         
         #Define a hitbox 
@@ -379,26 +433,32 @@ class Asteroid(Enemy, pygame.sprite.Sprite):
         
    
     #Retorna a posição do asteroide    
+    #@property
     def get_position(self):
         return self.rect.x,self.rect.y
     
 
     #Retorna a velocidade do asteroide    
+    #@property
     def speed(self):
         return self.x_speed,self.y_speed
     
     #Retorna se o asteroide está "vivo"
+    #@property
     def get_is_alive(self):
         return self.is_alive
 
     #Retorna o score que o asteroide dará ao jogador quando destruído
+    #@property
     def get_score(self):
         return self.score
     
+    #@get_score.setter
     def set_score(self,new_score):
         self.score = new_score
     
     #Altera a propriedade is_alive
+    #@get_is_alive.setter
     def set_is_alive(self,life_status):
         self.is_alive = life_status
         
@@ -436,7 +496,7 @@ class Explosion(pygame.sprite.Sprite):
             image = pygame.image.load(os.path.join(img_folder, filename)).convert()
             image.set_colorkey((0,0,0))
             
-            large_image = pygame.transform.scale(image,(64,64))
+            large_image = pygame.transform.scale(image,(80,80))
             explosion_animation["large"].append(large_image)
             
             small_image = pygame.transform.scale(image,(32,32))
@@ -465,6 +525,26 @@ class Explosion(pygame.sprite.Sprite):
         #Define a velocidade que os frames aparecem na explosão
         self.frame_rate = 50
         
+    #Retorna a posição da explosão    
+    #@property
+    def get_position(self):
+        return self.rect.center
+    
+    #Retorna o tamanho da explosão   
+    #@property
+    def get_size(self):
+        return self.size
+    
+    #Retorna o último update da explosão   
+    #@property
+    def get_last_update(self):
+        return self.last_update
+    
+    #Retorna a taxa de frames por segundo da explosão   
+    #@property
+    def get_frame_rate(self):
+        return self.frame_rate
+
     #Método para criar a animação    
     def update(self):
     
@@ -528,26 +608,41 @@ class Enemy_ship(Enemy, pygame.sprite.Sprite):
         self.last_shot = pygame.time.get_ticks()
 
     #Retorna a posição da nave inimiga    
+    #@property
     def get_position(self):
         return self.rect.x,self.rect.y
     
 
     #Retorna a velocidade da nave inimiga   
+    #@property
     def speed(self):
         return self.x_speed,self.y_speed
     
 
     #Retorna se a nave inimiga está viva
+    #@property
     def get_is_alive(self):
         return self.is_alive
     
 
     #Retorna o score da nave inimiga 
+    #@property
     def get_score(self):
         return self.score
     
+    #Retorna o intervalo de tiro da nave inimiga 
+    #@property
+    def get_shoot_delay(self):
+        return self.shoot_delay
+    
+    #Retorna o último tiro da nave inimiga 
+    #@property
+    def get_last_shot(self):
+        return self.last_shot
+    
 
     #Altera a propriedade is_alive
+    #@set.get_is_alive
     def set_is_alive(self,life_status):
         self.is_alive = life_status
         
@@ -558,6 +653,8 @@ class Enemy_ship(Enemy, pygame.sprite.Sprite):
         if self.is_alive == False:
             self.kill()
             
+    #Altera a propriedade score
+    #@set.get_score
     def set_score(self,new_score):
         self.score = new_score
         
@@ -591,11 +688,11 @@ class Power(pygame.sprite.Sprite):
         powers_images = {}
         
         #Adicione 2 tipos de bônus às opções
-        powers_images['shield'] = pygame.image.load(os.path.join(so.img_folder,"shield.png")).convert()
-        powers_images['gun'] = pygame.image.load(os.path.join(so.img_folder,"star.png")).convert()
+        powers_images["shield"] = pygame.image.load(os.path.join(so.img_folder,"shield.png")).convert()
+        powers_images["gun"] = pygame.image.load(os.path.join(so.img_folder,"star.png")).convert()
         
         
-        self.type = random.choice(['shield','gun'])
+        self.type = random.choice(["shield","gun"])
         
         # Defina a imagem
         self.image = powers_images[self.type]
