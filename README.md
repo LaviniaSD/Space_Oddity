@@ -17,7 +17,7 @@ OBS: Todos os botões são derivados de uma classe abstrata de botões, sendo qu
 
 <h3>Jogo:</h3>
 
-- [ ] Background em movimentação
+- [X] Background em movimentação
 - [X] Música de Fundo
 
 <h3>Jogador:</h3>
@@ -52,6 +52,12 @@ OBS: Todos os botões são derivados de uma classe abstrata de botões, sendo qu
 
 - [X] Aumenta conforme o score de jogador
 - [X] Exibido na tela como tratamento de texto 
+
+
+<h3>Bônus:</h3>
+
+- [X] Shields
+- [X] Tiros duplos
 
 <h3>Tela de game over:</h3>
 
