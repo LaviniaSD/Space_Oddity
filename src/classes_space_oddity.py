@@ -589,7 +589,7 @@ class Enemy_ship(Enemy, pygame.sprite.Sprite):
         
         #Orienta a posição inicial da nave inimiga
         self.rect.x = random.randrange(so.WIDTH - self.rect.width)
-        self.rect.y = random.randrange(so.HEIGHT/8,(so.HEIGHT/8)+30)
+        self.rect.y = random.randrange(int(so.HEIGHT/8),(int(so.HEIGHT/8))+30)
         
         #Define a velocidade da nave inimiga
         self.x_speed = 0
