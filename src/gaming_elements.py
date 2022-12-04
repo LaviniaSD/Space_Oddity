@@ -351,12 +351,13 @@ class Enemy(pygame.sprite.Sprite, ABC):
 
         
 #Cria a classe para os asteroides 
-class Asteroid(Enemy, pygame.sprite.Sprite):
+class Asteroid(Enemy):
     #Características iniciais da classe quando ela é iniciada
     def __init__(self):
         
         #Cria opções de asteroides
-        pygame.sprite.Sprite.__init__(self)
+        super().__init__()
+
         asteroids_list = ["asteroid.png",
                             "asteroid2.png",
                             "asteroid3.png"]
@@ -553,12 +554,13 @@ class Explosion(pygame.sprite.Sprite):
 
 
 #Cria a classe para as naves inimigas             
-class Enemy_ship(Enemy, pygame.sprite.Sprite):    
+class Enemy_ship(Enemy):    
     #Características iniciais da classe quando ela é iniciada
     def __init__(self):
         
         #Adiciona uma imagem à nave inimiga
-        pygame.sprite.Sprite.__init__(self)
+        super().__init__()
+
         self.image = pygame.image.load(os.path.join(st.img_folder,"enemy_ship.png")).convert()
         self.image = pygame.transform.scale(self.image, (64, 64))
         self.image.set_colorkey((255,255,255))
@@ -690,10 +692,8 @@ class Item(pygame.sprite.Sprite, ABC):
     def disappear(self):
         self.kill()
 
-class StarShooter(Item, pygame.sprite.Sprite):
+class StarShooter(Item):
     def __init__(self):
-
-        pygame.sprite.Sprite.__init__(self)
 
         image = pygame.image.load(os.path.join(st.img_folder,"star.png")).convert()
 
@@ -704,10 +704,8 @@ class StarShooter(Item, pygame.sprite.Sprite):
     def disappear(self):
         self.kill()
 
-class Shield(Item, pygame.sprite.Sprite):
+class Shield(Item):
     def __init__(self):
-
-        pygame.sprite.Sprite.__init__(self)
 
         image = pygame.image.load(os.path.join(st.img_folder,"shield.png")).convert()
 
@@ -719,39 +717,3 @@ class Shield(Item, pygame.sprite.Sprite):
         self.kill()
 
 
-#Crie a classe para os bônus (poderes)
-class Power(pygame.sprite.Sprite):
-    #Características iniciais da classe quando ela é iniciada
-    def __init__(self):
-        pygame.sprite.Sprite.__init__(self)
-        powers_images = {}
-        
-        #Adicione 2 tipos de bônus às opções
-        powers_images["shield"] = pygame.image.load(os.path.join(st.img_folder,"shield.png")).convert()
-        powers_images["gun"] = pygame.image.load(os.path.join(st.img_folder,"star.png")).convert()
-        
-        
-        self.type = random.choice(["shield","gun"])
-        
-        # Defina a imagem
-        self.image = powers_images[self.type]
-        self.image = pygame.transform.scale(self.image, (32, 32))
-        self.image.set_colorkey((0,0,0))
-        
-        #Define a hitbox 
-        self.hitbox = None
-
-        #Cria a reta para posicionar a classe
-        self.rect = self.image.get_rect()
-        
-        
-        #Orienta a posição inicial do bônus
-        self.rect.x = random.randrange(st.WIDTH - self.rect.width)
-        self.rect.y = random.randrange(st.HEIGHT - self.rect.height)
-
-        # Desaparece após 3 segundos na tela
-        Timer(3, self.disappear).start()
-
-    #Elimina o bônus
-    def disappear(self):
-        self.kill()
