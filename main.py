@@ -9,4 +9,3 @@ from space_oddity import Game
 
 # Inicializa o jogo
 Game()
-                           
