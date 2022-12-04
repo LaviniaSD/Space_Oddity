@@ -1,3 +1,6 @@
+"""Esse módulo contém a classe Game e as funcionalidades para a execução do jogo.
+"""
+
 # Importe as bibliotecas necessárias
 import json
 import math
@@ -57,6 +60,18 @@ class Game():
 
     # Define o método que controla o loop principal do jogo
     def mainloop(self, scene):
+        """Define o loop do jogo
+
+        Parameters
+        ----------
+        scene : str
+            Indica qual parte do jogo deve ser visualizada pelo usuário.
+
+        Returns
+        -------
+        None.
+
+        """
         self.scene = scene
 
         while scene != "quit":
@@ -67,6 +82,16 @@ class Game():
 
     # Crie um método para o menu principal
     def menu(self):
+        """Exibe o menu do jogo
+        
+
+        Returns
+        -------
+        str
+            Variável que será lida pela função 'mainloop'.
+
+        """
+        
         self.load_background("space_menu.jpg")
 
         # Define referências de posições para os botões, ao centro da tela
@@ -78,17 +103,6 @@ class Game():
         scores_button = it.Button(text="SCORES", x=x_centered, y=y_centered+65, width=200, height=30, font_size=25)
         exit_button = it.Button(text="EXIT", x=x_centered, y=y_centered+100, width=200, height=30, font_size=25)
 
-        # # Lê os dados dos high scores a partir do arquivo ".save/scores.txt"
-        # scores_filepath = os.path.join(st.save_folder, "scores.txt")
-        # try:
-        #     with open(scores_filepath, "r") as file:
-        #         if file.read() != "":
-        #             scores_data = json.load(file)
-        #         else:
-        #             scores_data = {}
-        # except FileNotFoundError:
-        #     scores_data = {"scores": []} # TODO: Conferir qual seria a fórmula de um arquivo vazio
-        # sorted_scores = sorted(scores_data.items(), key=lambda x: x[1]["points"], reverse=True)
 
         self.in_menu = True
 
@@ -142,6 +156,16 @@ class Game():
             pygame.display.flip()
 
     def run_game(self):
+        """Método que executa o loop principal do jogo
+        
+
+        Returns
+        -------
+        str
+            Variável que será lida pela função 'mainloop'.
+
+        """
+        
         self.load_background("space_pattern.jpg")
         
         #Crie uma variável para o deslizamento da tela
@@ -301,6 +325,7 @@ class Game():
                 life = player.life
                 damage = 1
                 
+                #Encerra o loop se o jogador morre
                 player.life = life - damage
                 if player.life <= 0:
                     running =  self.player_dies(running, player.score) 
@@ -322,7 +347,8 @@ class Game():
                 if hitted_bonus.type == "star":
                     player.gain_powerup()
                
-
+            
+            # Exibe o hitbox caso o jogador pressione "Shift"
             keys_pressed = pygame.key.get_pressed()
 
             if keys_pressed[pygame.K_LSHIFT]:
@@ -352,7 +378,7 @@ class Game():
             #Adiciona a pontuação no topo da tela
             self.draw_text(screen, f"Score: {str(player.score)}", 40, st.WIDTH/2, 15,(255,255,255))
             
-            #Adiciona os escudos no cando superior direito da tela
+            #Adiciona a quantidade de escudos na tela
             self.draw_text(screen, f"Shields: {str(player.life - 1)}", 25, st.WIDTH/2, 60,(255,255,255))
             
             # Atualize as imagens dos objetos quando ocorrerem mudanças
@@ -369,6 +395,17 @@ class Game():
 
     # Método que pausa o jogo
     def paused(self):
+        """Pausa o jogo
+        
+
+        Returns
+        -------
+        bool
+            DESCRIPTION.
+        bool
+            DESCRIPTION.
+
+        """
 
         self.load_background("space_pause.png")
 
@@ -439,6 +476,20 @@ class Game():
 
     # Método que exibe a tela de game over
     def game_over(self, player_score):
+        """Cria a tela de game over
+        
+
+        Parameters
+        ----------
+        player_score : int
+            Score do jogador.
+
+        Returns
+        -------
+        bool
+            DESCRIPTION.
+
+        """
         self.load_background("space_gameover.jpg")
 
         # Altera o estado da variável que controla o loop de game over
@@ -502,7 +553,7 @@ class Game():
                     # Caso o usuário clique no botão de play
                     if save_score_button.is_over(pos):
                         # Salva o score do jogador
-                        # COLOCA A SUA FUNCAO AQUI, no lugar do 'print()'
+                        # COLOCA A SUA FUNCAO AQUI, no lugar do "print()"
                         print(player_score)
 
                         self.over = False
@@ -515,6 +566,15 @@ class Game():
             clock.tick(st.FPS)
 
     def reset_game(self):
+        """Reseta as variáveis do jogo
+        
+
+        Returns
+        -------
+        None.
+
+        """
+        
         # Reinicia algumas constantes de controle de fluxo do jogo
         self.pause = False
         self.over = False
@@ -646,6 +706,19 @@ class Game():
         surface.blit(text_surface, text_rect)
 
     def load_background(self, background_image_filename):
+        """Carrega uma imagem de fundo
+        
+
+        Parameters
+        ----------
+        background_image_filename : str
+            Nome do arquivo de imagem.
+
+        Returns
+        -------
+        None.
+
+        """
         # Carrega a imagem de fundo do jogo
         st.background = pygame.image.load(os.path.join(st.img_folder, background_image_filename))
         # Caso a tela seja maior que a imagem, redimensione a imagem de fundo

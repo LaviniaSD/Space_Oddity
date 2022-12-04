@@ -1,4 +1,8 @@
 import os
+"""Arquivo contendo as variáveis globais do jogo
+"""
+
+#Importe a biblioteca necessária
 import pygame
 
 # Defina os caminhos para as pastas necessárias
@@ -62,4 +66,8 @@ background_height = background.get_height()
 
 # Som de background
 pygame.mixer.music.load(os.path.join(sound_folder, "som1.mp3"))
+pygame.mixer.music.set_volume(0.5)
+
+# Som do menu
+pygame.mixer.music.load(os.path.join(sound_folder, "menu_song.mp3"))
 pygame.mixer.music.set_volume(0.5)

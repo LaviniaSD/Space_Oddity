@@ -1,3 +1,6 @@
+"""Este arquivo contém as classes para criar interfaces no jogo
+"""
+
 #Importando bibliotecas necessárias
 import pygame
 import setup as st
@@ -5,6 +8,7 @@ import setup as st
 #Button
 #InputTextBox
 
+#Classe para a criação de botões
 class Button():
 
     # Construtor da classe Button
@@ -26,6 +30,21 @@ class Button():
 
     # Método para desenhar o botão na tela
     def draw(self, screen, outline=None):
+        """Desenha o botão na tela
+        
+
+        Parameters
+        ----------
+        screen : pygame.display
+            Tela do jogo.
+        outline : boll, optional
+            Indica se haverá "bordas" no botão. O default é "None".
+
+        Returns
+        -------
+        None.
+
+        """
         # Desenha uma borda ao redor do botão, caso outline seja True
         if outline:
             pygame.draw.rect(screen, outline, (self.x-2,self.y-2,self.width+4,self.height+4),0)
@@ -48,12 +67,27 @@ class Button():
 
     # Método para verificar se o mouse está sobre o botão
     def is_over(self, pos):
+        """Verifica se o mouse está sobre o botão
+        
+
+        Parameters
+        ----------
+        pos : tuple
+            Coordenada do mouse.
+
+        Returns
+        -------
+        bool
+            Retorna True caso o mouse esteja sobre o botão e False caso não esteja.
+
+        """
         if pos[0] > self.x and pos[0] < self.x + self.width:
             if pos[1] > self.y and pos[1] < self.y + self.height:
                 return True
                 
         return False
         
+#Classe para a digitação de texto
 class InputTextBox():
 
     # Defina as cores padrão das bordas para os estados de atividade do componente
@@ -85,6 +119,19 @@ class InputTextBox():
 
     # Método para permitir que a caixa de texto interaja com os eventos do sistema
     def handle_event(self, event):
+        """Conecta a caixa de texto com os outros eventos do jogo.
+        
+
+        Parameters
+        ----------
+        event : pygame.event
+            Evento ocorrido no jogo.
+
+        Returns
+        -------
+        None.
+
+        """
         # Caso o usuário clique com o botão esquerdo do mouse
         if event.type == pygame.MOUSEBUTTONDOWN:
             # Caso o mouse esteja sobre a caixa de texto
@@ -118,11 +165,32 @@ class InputTextBox():
 
     # Método para atualizar o tamanho da caixa de texto caso o texto seja maior que o tamanho da caixa   
     def update(self):
+        """Atualize o tamanho da caixa de texto conforme o tamanho do texto.
+        
+
+        Returns
+        -------
+        None.
+
+        """
         self.width = max(self.width, self.text_surface.get_width()+10)
         self.rect.w = self.width
 
     # Método para desenhar o componente na tela
     def draw(self, screen):
+        """Desenha o componente na tela
+        
+
+        Parameters
+        ----------
+        screen : pygame.display
+            Tela do jogo.
+
+        Returns
+        -------
+        None.
+
+        """
         # Desenhe a caixa de texto
         pygame.draw.rect(screen, self.background_color, (self.x,self.y,self.width,self.height),0)
         # Desenhe a borda da caixa de texto
