@@ -98,10 +98,11 @@ class Game():
         #     scores_data = {"scores": []} # TODO: Conferir qual seria a fórmula de um arquivo vazio
         # sorted_scores = sorted(scores_data.items(), key=lambda x: x[1]["points"], reverse=True)
 
+        self.in_menu = True
+
         # Inicia um loop para o menu
         while self.in_menu:
-            # fnc()
-            
+
             # Carrega a imagem de fundo do menu
             # screen.blit(menuBg, (0, 0))
 
@@ -132,6 +133,7 @@ class Game():
                     
                     # Caso o usuário clique no botão de play
                     if play_button.is_over(pos):
+                        self.in_menu = False
                         return "game"
         
                     # Caso o usuário clique no botão de scores
@@ -214,8 +216,6 @@ class Game():
                     self.quit_game()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        # running = False
-                        # mso.quit_game()
                         self.pause = self.paused()
 
             # Atualiza os sprites
@@ -283,7 +283,7 @@ class Game():
                 damage = 1
                 player.set_life(life - damage)
                 if player.get_life() <= 0:
-                    running =  self.player_dies(running) 
+                    running =  self.player_dies(running, player.get_score()) 
                 
             #Cria casos de colisão entre balas do inimigo e o jogador    
             enemy_shoots_player = pygame.sprite.spritecollide(
@@ -299,7 +299,7 @@ class Game():
                 damage = 1
                 player.set_life(life - damage)
                 if player.get_life() <= 0:
-                    running = self.player_dies(running)  
+                    running = self.player_dies(running, player.get_score())  
                 
             #Cria casos de colisão entre nave inimiga e o jogador    
             enemy_hits_player = pygame.sprite.spritecollide(
@@ -315,7 +315,7 @@ class Game():
                 damage = 1
                 player.set_life(life - damage)
                 if player.get_life() <= 0:
-                    running =  self.player_dies(running) 
+                    running =  self.player_dies(running, player.get_score()) 
                 
             
             #Cria casos de colisão entre bônus e o jogador
@@ -368,9 +368,12 @@ class Game():
             
             # Atualiza o jogo
             pygame.display.update()
-        
-        self.quit_game()
 
+        # Reinicia as variáveis que armazenam os sprites, evitando crosstalk de objetos entre as jogatinas
+        self.reset_game()
+
+        # Encerra o método "run_game()", instruindo a aplicação a se redicionar para o menu
+        return "menu"
 
     def paused(self):
         self.pause = True
@@ -431,6 +434,19 @@ class Game():
             pygame.display.update()
             clock.tick(st.FPS)
 
+    def reset_game(self):
+        # Reinicia algumas constantes de controle de fluxo do jogo
+        self.pause = False
+        self.over = False
+
+        # Reinicia as variáveis que armazenam os sprites do jogo
+        st.all_sprites = pygame.sprite.Group()
+        st.asteroids = pygame.sprite.Group()
+        st.enemy_ships = pygame.sprite.Group()
+        st.bullets = pygame.sprite.Group()
+        st.enemies_bullets = pygame.sprite.Group()
+        st.powers = pygame.sprite.Group()
+
     # Crie uma função para a dispersão de asteroides
     def spawn_asteroids(self, asteroids_group,all_sprites_group):
         """Recebe um grupo para os sprites de asteroides e um para todos os sprites 
@@ -479,9 +495,8 @@ class Game():
         enemy.update()
 
     #Crie uma função para a morte do jogador
-    def player_dies(self, loop):
+    def player_dies(self, loop, player_score):
         """Recebe o loop do jogo e o encerra.
-        
 
         Parameters
         ----------
@@ -494,7 +509,13 @@ class Game():
             Loop do jogo, agora sendo "Falso".
 
         """
+
+        # Renderiza a tela de "Game Over"
+        self.game_over(player_score)
+
+        # Atualiza e retorna a variável responsavel pelo loop do jogo
         loop = False
+
         return loop
 
     # Crie um método para o encerramento do jogo
@@ -509,7 +530,6 @@ class Game():
         """
         pygame.quit()
         sys.exit()
-
 
     #Inicia o pygame
     # pygame.init()
