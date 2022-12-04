@@ -27,7 +27,10 @@ clock = pygame.time.Clock()
 class Game():
 
     # Crie um st.background
-    st.background = pygame.image.load(os.path.join(st.img_folder, "space.jpg"))
+    st.background = pygame.image.load(os.path.join(st.img_folder, "space_pattern.jpg"))
+    # Caso a tela seja maior que a imagem, redimensione a imagem de fundo
+    if st.WIDTH > st.background.get_width():
+        st.background = pygame.transform.scale(st.background, (st.WIDTH, st.WIDTH))
 
     # Armazene a altura desse st.background
     st.background_height = st.background.get_height()
