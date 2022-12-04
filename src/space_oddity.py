@@ -74,7 +74,7 @@ class Game():
         """
         self.scene = scene
 
-        while scene != "quit":
+        while True:
             if scene == "menu":
                 scene = self.menu()
             elif scene == "game":
@@ -88,7 +88,7 @@ class Game():
         Returns
         -------
         str
-            Variável que será lida pela função 'mainloop'.
+            Variável que será lida pela função 'mainloop', indicando a próxima tela a ser exibida, após uma interação do usuário.
 
         """
         
@@ -162,7 +162,7 @@ class Game():
         Returns
         -------
         str
-            Variável que será lida pela função 'mainloop'.
+            Variável que será lida pela função 'mainloop', indicando a próxima tela a ser exibida, após o fim da jogatina.
 
         """
         
@@ -401,9 +401,9 @@ class Game():
         Returns
         -------
         bool
-            DESCRIPTION.
+            O estado de pause do jogo. Sempre retorna False, pois conclui o ciclo de pause.
         bool
-            DESCRIPTION.
+            O estado de loop do jogo. Por padrão, retorna True, indicando que o jogo deve continuar. Se o usuário desejar ir pro menu, retorna False, quebrando o loop do jogo.
 
         """
 
@@ -487,7 +487,7 @@ class Game():
         Returns
         -------
         bool
-            DESCRIPTION.
+            O estado do game over, que é falsa, pois demarca o fim do ciclo de game over.
 
         """
         self.load_background("space_gameover.jpg")
@@ -640,12 +640,12 @@ class Game():
 
         Parameters
         ----------
-        loop : boll
+        loop : bool
             Loop do jogo.
 
         Returns
         -------
-        loop : boll
+        loop : bool
             Loop do jogo, agora sendo "Falso".
 
         """
@@ -691,6 +691,8 @@ class Game():
             Posição do texto no eixo y.
         color : tuple
             Cor do texto.
+        font_name : str, optional
+            Nome da fonte do texto. The default is st.font_name_bold.
 
         Returns
         -------
