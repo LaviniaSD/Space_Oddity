@@ -74,10 +74,9 @@ class Game():
         y_centered = st.HEIGHT / 2
 
         # Instancia os botões do menu
-        play_button = it.Button(text="PLAY", x=x_centered, y=y_centered-60, width=200, height=25)
-        scores_button = it.Button(text="SCORES", x=x_centered, y=y_centered-30, width=200, height=25)
-        intructions_button = it.Button(text="INSTRUCTIONS", x=x_centered, y=y_centered, width=200, height=25)
-        exit_button = it.Button(text="EXIT", x=x_centered, y=y_centered+30, width=200, height=25)
+        play_button = it.Button(text="PLAY", x=x_centered, y=y_centered+30, width=200, height=30, font_size=25)
+        scores_button = it.Button(text="SCORES", x=x_centered, y=y_centered+65, width=200, height=30, font_size=25)
+        exit_button = it.Button(text="EXIT", x=x_centered, y=y_centered+100, width=200, height=30, font_size=25)
 
         # # Lê os dados dos high scores a partir do arquivo ".save/scores.txt"
         # scores_filepath = os.path.join(st.save_folder, "scores.txt")
@@ -100,10 +99,12 @@ class Game():
             # screen.fill(st.WHITE)
             screen.blit(st.background, (0, 0))
 
+            # Imprime o nome do jogo na tela
+            self.draw_text(screen, "Space Oddity", 130, x_centered, y_centered-150, st.WHITE)
+
             # Desenha os botões na tela
             play_button.draw(screen, (0,0,0))
             scores_button.draw(screen, (0,0,0))
-            intructions_button.draw(screen, (0,0,0))
             exit_button.draw(screen, (0,0,0))
 
             # Verifica a ocorrência de eventos
@@ -128,11 +129,6 @@ class Game():
                     elif scores_button.is_over(pos):
                         # changescn("scores")
                         print("scores")
-
-                    # Caso o usuário clique no botão de instruções
-                    elif intructions_button.is_over(pos):
-                        # changescn("instructions")
-                        print("instructions")
                     
                     # Caso o usuário clique no botão de sair
                     elif exit_button.is_over(pos):
@@ -354,10 +350,10 @@ class Game():
             # Insere o score na tela
 
             #Adiciona a pontuação no topo da tela
-            self.draw_text(screen, f"Score: {str(player.score)}", 40, st.WIDTH/2, 10,(255,255,255))
+            self.draw_text(screen, f"Score: {str(player.score)}", 40, st.WIDTH/2, 15,(255,255,255))
             
             #Adiciona os escudos no cando superior direito da tela
-            self.draw_text(screen, f"Shields: {str(player.life - 1)}", 20, st.WIDTH * (7/8), 10,(255,255,255))
+            self.draw_text(screen, f"Shields: {str(player.life - 1)}", 25, st.WIDTH/2, 60,(255,255,255))
             
             # Atualize as imagens dos objetos quando ocorrerem mudanças
             pygame.display.flip()
@@ -384,8 +380,8 @@ class Game():
         y_centered = st.HEIGHT / 2
 
         # Cria os botões da tela de pause
-        back_to_menu = it.Button(text="Sair e voltar ao menu principal", x=x_centered, y=y_centered+30, width=200, height=25)
-        back_to_game = it.Button(text="Voltar ao jogo (ESC)", x=x_centered, y=y_centered+60, width=200, height=25)
+        back_to_menu = it.Button(text="Sair e voltar ao menu principal", x=x_centered, y=y_centered+35, width=350, height=30, font_size=25)
+        back_to_game = it.Button(text="Voltar ao jogo (ESC)", x=x_centered, y=y_centered+70, width=350, height=30, font_size=25)
 
         # Cria um loop que controla o estado de pause
         while self.pause:
@@ -453,8 +449,8 @@ class Game():
         y_centered = st.HEIGHT / 2
 
         # Inicializa os componentes da interface que estarao na tela de game over
-        player_name_box = it.InputTextBox(x_centered, y_centered, 200, max_input_length=20)
-        save_score_button = it.Button(text="Salvar score", x=x_centered, y=y_centered+50, width=200, height=25)
+        player_name_box = it.InputTextBox(x_centered, y_centered+100, 250, max_input_length=20)
+        save_score_button = it.Button(text="Salvar score", x=x_centered, y=y_centered+140, width=250, height=30, font_size=25)
 
         # Inicia um loop para a exibição da tela de game over
         while self.over:
@@ -464,12 +460,12 @@ class Game():
             screen.blit(st.background, (0, 0))
 
             # Imprime uma mensagem de "Game Over" na tela
-            self.draw_text(screen, "GAME OVER", 100, x_centered, y_centered - 250, st.WHITE)
+            self.draw_text(screen, "GAME OVER", 120, x_centered, y_centered - 150, st.WHITE)
             # Imprime a pontuação do jogador na tela
-            self.draw_text(screen, f"Score: {str(player_score)}", 50, x_centered, y_centered - 100, st.WHITE)
+            self.draw_text(screen, f"Score: {str(player_score)}", 50, x_centered, y_centered - 20, st.WHITE)
 
             # Imprime um rótulo para a caixa de nome do usuário
-            self.draw_text(screen, "Digite seu nome:", 30, x_centered, y_centered - 50, st.WHITE)
+            self.draw_text(screen, "Digite seu nome:", 30, x_centered, y_centered+50, st.WHITE)
 
             # Desenha a caixa de texto para o nome do usuário
             player_name_box.update()
@@ -508,6 +504,9 @@ class Game():
                         # Salva o score do jogador
                         # COLOCA A SUA FUNCAO AQUI, no lugar do 'print()'
                         print(player_score)
+
+                        self.over = False
+                        break
                     else:
                         pass
             
@@ -655,13 +654,3 @@ class Game():
 
         # Armazene a altura desse st.background
         st.background_height = st.background.get_height()
-
-##########################
-
-# font_name = pygame.font.match_font("arial")
-
-# draw_text(surface, text, size, x, y, color) -> GAME
-# quit_game() -> GAME
-# spawn_asteroids(asteroids_group,all_sprites_group) -> GAME
-# spawn_enemy_ships(enemy_ships_group,all_sprites_group) -> GAME
-# player_dies -> GAME
