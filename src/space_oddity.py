@@ -56,6 +56,7 @@ class Game():
 
         self.in_menu = True
         self.pause = False
+        self.restart = False
         self.mainloop("menu")
 
     # Define o método que controla o loop principal do jogo
@@ -391,7 +392,11 @@ class Game():
         self.reset_game()
 
         # Encerra o método "run_game()", instruindo a aplicação a se redicionar para o menu
-        return "menu"
+        if self.restart:
+            self.restart = False
+            return "game"
+        else:
+            return "menu"
 
     # Método que pausa o jogo
     def paused(self):
@@ -502,6 +507,8 @@ class Game():
         # Inicializa os componentes da interface que estarao na tela de game over
         player_name_box = it.InputTextBox(x_centered, y_centered+100, 250, max_input_length=20)
         save_score_button = it.Button(text="Salvar score", x=x_centered, y=y_centered+140, width=250, height=30, font_size=25)
+        play_again = it.Button(text="Jogar novamente", x=x_centered, y=y_centered+195, width=250, height=30, font_size=25)
+        back_to_menu = it.Button(text="Voltar ao menu (ESC)", x=x_centered, y=y_centered+230, width=250, height=30, font_size=25)
 
         # Inicia um loop para a exibição da tela de game over
         while self.over:
@@ -522,8 +529,10 @@ class Game():
             player_name_box.update()
             player_name_box.draw(screen)
 
-            # Desenha o botão para salvar o score
+            # Desenha os botões da tela de game over
             save_score_button.draw(screen, (0,0,0))
+            play_again.draw(screen, (0,0,0))
+            back_to_menu.draw(screen, (0,0,0))
 
             # Tratamento de eventos
             for event in pygame.event.get():
@@ -543,10 +552,6 @@ class Game():
                     if event.key == pygame.K_ESCAPE:
                         self.over = False
                         return False
-                    # Caso o usuário aperte o botão ENTER
-                    elif event.key == pygame.K_RETURN:
-                        self.over = False
-                        return False
 
                 # Caso o usuário clique com o botão esquerdo do mouse
                 elif event.type == pygame.MOUSEBUTTONDOWN:
@@ -556,8 +561,17 @@ class Game():
                         # COLOCA A SUA FUNCAO AQUI, no lugar do "print()"
                         print(player_score)
 
+                    # Caso o usuário clique no botão de voltar ao menu
+                    elif back_to_menu.is_over(pos):
                         self.over = False
                         break
+
+                    # Caso o usuário clique no botão de jogar novamente
+                    elif play_again.is_over(pos):
+                        self.over = False
+                        self.restart = True
+                        break
+
                     else:
                         pass
             
