@@ -58,7 +58,6 @@ class Game():
     def __init__(self):
 
         self.in_menu = True
-        self.game_is_running = False
         self.pause = False
         self.mainloop("menu")
 
@@ -114,10 +113,6 @@ class Game():
             intructions_button.draw(screen, (0,0,0))
             exit_button.draw(screen, (0,0,0))
 
-            # Caso o usuário estava jogando, desenha o botão de voltar ao jogo
-            if self.game_is_running:
-                back_button.draw(screen, (0,0,0))
-
             # Verifica a ocorrência de eventos
             for event in pygame.event.get():
                 # Recolhe a posição atual do mouse
@@ -150,11 +145,6 @@ class Game():
                     elif exit_button.is_over(pos):
                         self.in_menu = False
                         self.quit_game()
-                        
-                    # Caso o usuário clique no botão de voltar para o jogo (caso esteja jogando)
-                    elif back_button.is_over(pos):
-                        # changescn("mainLoop")
-                        print("mainLoop")
 
                     else:
                         pass
@@ -203,7 +193,7 @@ class Game():
             level_delay = pygame.time.get_ticks()
             
             #Adicione um nível de 5 em 5 segundos
-            if level_delay - start_level_time   > 5000:
+            if level_delay - start_level_time > 5000:
                 start_level_time = pygame.time.get_ticks()
                 level += 1
             
@@ -216,7 +206,7 @@ class Game():
                     self.quit_game()
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
-                        self.pause = self.paused()
+                        self.pause, running = self.paused()
 
             # Atualiza os sprites
             st.all_sprites.update()
@@ -375,22 +365,69 @@ class Game():
         # Encerra o método "run_game()", instruindo a aplicação a se redicionar para o menu
         return "menu"
 
+    # Método que pausa o jogo
     def paused(self):
+        # Altera o estado da variável que controla o loop de pause
         self.pause = True
 
+        # Define referências de posições para os botões, ao centro da tela
+        x_centered = st.WIDTH / 2
+        y_centered = st.HEIGHT / 2
+
+        # Cria os botões da tela de pause
+        back_to_menu = it.Button(text="Sair e voltar ao menu principal", x=x_centered, y=y_centered+30, width=200, height=25)
+        back_to_game = it.Button(text="Voltar ao jogo (ESC)", x=x_centered, y=y_centered+60, width=200, height=25)
+
+        # Cria um loop que controla o estado de pause
         while self.pause:
-            for event in pygame.event.get():
-                if event.type == pygame.QUIT:
-                    self.quit_game()
-                elif event.type == pygame.KEYDOWN:
-                    if event.key == pygame.K_ESCAPE:
-                        return False
-                    
+
+            # Preenche a tela com a cor branca
             screen.fill(st.WHITE)
 
+            # Imprime o texto "PAUSE" na tela
+            self.draw_text(screen, "Jogo pausado", 80, x_centered, y_centered-150, st.BLACK)
+
+            # Desenha os botões da tela de pause
+            back_to_menu.draw(screen, (0,0,0))
+            back_to_game.draw(screen, (0,0,0))
+
+            # Tratamento de eventos
+            for event in pygame.event.get():
+                # Recolhe a posição atual do mouse
+                pos = pygame.mouse.get_pos()
+
+                # Caso o usuário feche a janela
+                if event.type == pygame.QUIT:
+                    self.quit_game()
+
+                # Caso o usuário aperte alguma tecla
+                elif event.type == pygame.KEYDOWN:
+                    # Caso o usuário aperte o botão ESC, ele deve sair da tela de pause e voltar ao jogo
+                    if event.key == pygame.K_ESCAPE:
+                        self.pause = False
+                        return False, True
+
+                # Caso o usuário clique com o botão esquerdo do mouse
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    
+                    # Caso o usuário clique no botão de voltar ao menu principal, o loop do jogo se encerra
+                    if back_to_menu.is_over(pos):
+                        self.pause = False
+                        return False, False
+
+                    # Caso o usuário clique no botão de voltar ao jogo
+                    elif back_to_game.is_over(pos):
+                        self.pause = False
+                        return False, True
+
+                else:
+                    pass
+
+            # Atualiza a tela e o clock
             pygame.display.update()
             clock.tick(st.FPS)
 
+    # Método que exibe a tela de game over
     def game_over(self, player_score):
         # Altera o estado da variável que controla o loop de game over
         self.over = True
@@ -424,6 +461,7 @@ class Game():
             # Desenha o botão para salvar o score
             save_score_button.draw(screen, (0,0,0))
 
+            # Tratamento de eventos
             for event in pygame.event.get():
                 # Recolhe a posição atual do mouse
                 pos = pygame.mouse.get_pos()
