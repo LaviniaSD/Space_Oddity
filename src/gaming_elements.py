@@ -94,31 +94,28 @@ class Bullet(pygame.sprite.Sprite):
         self.rect.centerx = x
         
         #Define a velocidade da bala
-        self.x_speed = 0
-        self.y_speed = 0
-        
-    
+        self.speed = (0,0)
+
     #Retorna a posição da bala   
-    #@property
-    def get_position(self):
-        return self.rect.x,self.rect.y
-    
-    #@property
+    @property
+    def position(self):
+        return self._rect.x,self._rect.y
+
+    @property
     #Retorna a velocidade da bala     
     def speed(self):
-        return self.x_speed,self.y_speed
+        return self._speed
     
-    #@speed.setter
+    @speed.setter
     #Muda a velocidade da bala
-    def set_speed(self,new_speed_x,new_speed_y):
-        self.x_speed = new_speed_x
-        self.y_speed = new_speed_y
+    def speed(self,new_speed):
+        self._speed = new_speed
     
     
     #Muda a posição da bala
     def update(self):
-        self.rect.x += self.x_speed 
-        self.rect.y += self.y_speed 
+        self.rect.x += self.speed[0]
+        self.rect.y += self.speed[1]
         
         #Caso a bala ultrapasse as bordas, a elimine.
         if self.rect.bottom < 0:
@@ -150,9 +147,7 @@ class Player(pygame.sprite.Sprite):
         self.rect.bottom = st.HEIGHT -10
         
         # Define a velocidade do jogador
-        self.x_speed = 0
-        self.y_speed = 0
-
+        self.speed = (0,0)
         
         self.focus = False
 
@@ -175,55 +170,70 @@ class Player(pygame.sprite.Sprite):
         self.power_time = pygame.time.get_ticks()
         
     #Retorna a posição do jogador    
-    #@property
-    def get_position(self):
-        return self.rect.x,self.rect.y
+    @property
+    def position(self):
+        return self._rect.x,self._rect.y
     
     #Retorna a velocidade do jogador    
-    #@property
+    @property
     def speed(self):
-        return self.x_speed,self.y_speed
+        return self._speed
     
     #Retorna se o jogador está vivo
-    #@property
-    def get_life(self):
-        return self.life
+    @property
+    def life(self):
+        return self._life
     
     #Retorna o score do jogador 
-    #@property
-    def get_score(self):
-        return self.score
+    @property
+    def score(self):
+        return self._score
+    
+    #Retorna o shoot_delay do jogador 
+    @property
+    def shoot_delay(self):
+        return self._shoot_delay
     
     #Retorna o score do jogador 
-    #@property
-    def get_shoot_delay(self):
-        return self.shoot_delay
+    @property
+    def power(self):
+        return self._power
     
-    #Retorna o score do jogador 
-    #@property
-    def get_power(self):
-        return self.power
+    #Retorna o power_time do jogador 
+    @property
+    def power_time(self):
+        return self._power_time
     
-    #Retorna o score do jogador 
-    #@property
-    def get_power_time(self):
-        return self.power_time
+    #Altera a propriedade speed
+    @speed.setter
+    def speed(self,new_speed):
+        self._speed = new_speed
+       
     
     #Altera a propriedade life
-    #@speed.setter
-    def set_speed(self,new_speed_x,new_speed_y):
-        self.x_speed = new_speed_x
-        self.x_speed = new_speed_y
-    
-    #Altera a propriedade life
-    #@get_life.setter
-    def set_life(self,new_life):
-        self.life = new_life
+    @life.setter
+    def life(self,new_life):
+        self._life = new_life
 
     #Altera a propriedade score
-    #@get_score.setter
-    def set_score(self,new_score):
-        self.score = new_score
+    @score.setter
+    def score(self,new_score):
+        self._score = new_score
+        
+    #Altera a propriedade shoot_delay
+    @shoot_delay.setter
+    def shoot_delay(self,new_shoot_delay):
+        self._shoot_delay = new_shoot_delay
+        
+    #Retorna o score do jogador 
+    @power.setter
+    def power(self,new_power):
+        self._power = new_power
+    
+    #Retorna o score do jogador 
+    @power_time.setter
+    def power_time(self,new_power_time):
+        self._power_time = new_power_time
         
     #Atualiza a nave de acordo com os comandos do jogador   
     def update(self):
@@ -233,38 +243,32 @@ class Player(pygame.sprite.Sprite):
             self.power_time = pygame.time.get_ticks()
         
         #Seta a velocidade como 0
-        self.x_speed = 0
-        self.y_speed = 0
-        
+        self.speed = (0,0)        
         #Reage a interações do usuário
         keystate = pygame.key.get_pressed()
         if keystate[pygame.K_LEFT] or keystate[pygame.K_a]:
             if keystate[pygame.K_DOWN] or keystate[pygame.K_s]:
-                self.x_speed = -4
-                self.y_speed = 4
+                self.speed = (-4,4)
             elif keystate[pygame.K_UP] or keystate[pygame.K_w]:
-                self.x_speed = -4
-                self.y_speed = -4
+                self.speed = (-4,-4)
             else:
-                self.x_speed = -8
+                self.speed = (-8,self.speed[1])
         if keystate[pygame.K_RIGHT] or keystate[pygame.K_d]:
             if keystate[pygame.K_DOWN] or keystate[pygame.K_s]:
-                self.x_speed = 4
-                self.y_speed = 4
+                self.speed = (4,4)
             elif keystate[pygame.K_UP] or keystate[pygame.K_w]:
-                self.x_speed = 4
-                self.y_speed = -4
+                self.speed = (4,-4)
             else:
-                self.x_speed = 8
+                self.speed = (8,self.speed[1])
         if keystate[pygame.K_UP] or keystate[pygame.K_w]:
-            self.y_speed = -8
+            self.speed = (self.speed[0],-8)
         if keystate[pygame.K_DOWN] or keystate[pygame.K_s]:
-            self.y_speed = 8
+            self.speed = (self.speed[0],8)
         if keystate[pygame.K_SPACE] or keystate[pygame.K_z]:
             self.shoot()
             
-        self.rect.x += self.x_speed
-        self.rect.y += self.y_speed
+        self.rect.x += self.speed[0]
+        self.rect.y += self.speed[1]
         
         #Não deixa que o jogador ultrapasse os limites da tela
         if self.rect.right > st.WIDTH:
@@ -292,7 +296,7 @@ class Player(pygame.sprite.Sprite):
                 
                 #Dispara a balas
                 bullet = Bullet(self.rect.centerx,self.rect.top)
-                bullet.set_speed(0,-15)
+                bullet.speed = (0,-15)
                 st.all_sprites.add(bullet)
                 st.bullets.add(bullet)
             if self.power >= 2:
@@ -304,8 +308,8 @@ class Player(pygame.sprite.Sprite):
                 #Dispara a balas
                 bullet1 = Bullet(self.rect.left,self.rect.centery)
                 bullet2 = Bullet(self.rect.right,self.rect.centery)
-                bullet1.set_speed(0,-15)
-                bullet2.set_speed(0,-15)
+                bullet1.speed= (0,-15)
+                bullet2.speed= (0,-15)
                 st.all_sprites.add(bullet1)
                 st.bullets.add(bullet1)
                 st.all_sprites.add(bullet2)
@@ -322,7 +326,7 @@ class Enemy(pygame.sprite.Sprite, ABC):
         pygame.sprite.Sprite.__init__(self)
 
     @abstractmethod
-    def get_position(self):
+    def position(self):
         pass
 
     @abstractmethod
@@ -330,19 +334,11 @@ class Enemy(pygame.sprite.Sprite, ABC):
         pass
 
     @abstractmethod
-    def get_position(self):
+    def is_alive(self):
         pass
 
     @abstractmethod
-    def get_is_alive(self):
-        pass
-
-    @abstractmethod
-    def get_score(self):
-        pass
-
-    @abstractmethod
-    def set_is_alive(self):
+    def score(self):
         pass
 
     @abstractmethod
@@ -404,8 +400,7 @@ class Asteroid(Enemy):
         self.rect.y = random.randrange(-40,-15)
         
         #Define uma velocidade aleatória para cada asteroide
-        self.x_speed = random.randrange(-5,5)
-        self.y_speed = random.randrange(1,10)
+        self.speed = (random.randrange(-5,5),random.randrange(1,10))
     
         #Define se o jogador está vivo
         self.is_alive = True
@@ -415,50 +410,58 @@ class Asteroid(Enemy):
         
    
     #Retorna a posição do asteroide    
-    #@property
-    def get_position(self):
-        return self.rect.x,self.rect.y
+    @property
+    def position(self):
+        return self._rect.x,self._rect.y
     
-
     #Retorna a velocidade do asteroide    
-    #@property
+    @property
     def speed(self):
-        return self.x_speed,self.y_speed
+        return self._speed
     
     #Retorna se o asteroide está "vivo"
-    #@property
-    def get_is_alive(self):
-        return self.is_alive
+    @property
+    def is_alive(self):
+        return self._is_alive
 
     #Retorna o score que o asteroide dará ao jogador quando destruído
-    #@property
-    def get_score(self):
-        return self.score
+    @property
+    def score(self):
+        return self._score
     
-    #@get_score.setter
-    def set_score(self,new_score):
-        self.score = new_score
+    @score.setter
+    def score(self,new_score):
+        self._score = new_score
+    
+    #Altera a propriedade speed
+    @speed.setter
+    def speed(self,new_speed):
+        self._speed = new_speed
+        
     
     #Altera a propriedade is_alive
-    #@get_is_alive.setter
-    def set_is_alive(self,life_status):
-        self.is_alive = life_status
+    @is_alive.setter
+    def is_alive(self,life_status):
+        self._is_alive = life_status
         
         if self.is_alive == False:
             self.kill()
+            
+    #Altera a propriedade score
+    @score.setter
+    def score(self,new_score):
+        self._score = new_score
         
     #Muda a posição do asteroide
     def update(self):
-        self.rect.x += self.x_speed 
-        self.rect.y += self.y_speed 
+        self.rect.x += self.speed[0]
+        self.rect.y += self.speed[1]
         
         #Caso o asteroide ultrapasse as bordas, crie outro
         if self.rect.top > st.HEIGHT + 10 or self.rect.left < -10 or self.rect.right > st.WIDTH + 10:
-            self.x_speed = random.randrange(-5,5)
-            self.y_speed = random.randrange(1,10)
+            self.speed = (random.randrange(-5,5),random.randrange(1,10))
             self.rect.x = random.randrange(st.WIDTH - self.rect.width)
             self.rect.y = random.randrange(-100,-40)
-            self.y_speed = random.randrange(1,10)
    
     
 #Crie uma classe para explosões
@@ -508,25 +511,37 @@ class Explosion(pygame.sprite.Sprite):
         self.frame_rate = 50
         
     #Retorna a posição da explosão    
-    #@property
-    def get_position(self):
-        return self.rect.center
+    @property
+    def position(self):
+        return self._rect.center
     
     #Retorna o tamanho da explosão   
-    #@property
-    def get_size(self):
-        return self.size
+    @property
+    def size(self):
+        return self._size
     
     #Retorna o último update da explosão   
-    #@property
-    def get_last_update(self):
-        return self.last_update
+    @property
+    def last_update(self):
+        return self._last_update
     
     #Retorna a taxa de frames por segundo da explosão   
-    #@property
-    def get_frame_rate(self):
-        return self.frame_rate
+    @property
+    def frame_rate(self):
+        return self._frame_rate
+    
+    @size.setter
+    def size(self,new_size):
+        self._size = new_size
+    
+    @last_update.setter
+    def last_update(self,new_last_update):
+        self._last_update = new_last_update
 
+    @frame_rate.setter
+    def frame_rate(self,new_frame_rate):
+        self._frame_rate = new_frame_rate
+    
     #Método para criar a animação    
     def update(self):
     
@@ -575,9 +590,8 @@ class Enemy_ship(Enemy):
         self.rect.y = random.randrange(int(st.HEIGHT/8),(int(st.HEIGHT/8))+30)
         
         #Define a velocidade da nave inimiga
-        self.x_speed = 0
-        self.y_speed = 0
-        
+        self.speed = (0,0)
+
         #Define se a nave inimiga está "viva"
         self.is_alive = True
         
@@ -591,43 +605,48 @@ class Enemy_ship(Enemy):
         self.last_shot = pygame.time.get_ticks()
 
     #Retorna a posição da nave inimiga    
-    #@property
-    def get_position(self):
-        return self.rect.x,self.rect.y
+    @property
+    def position(self):
+        return self._rect.x,self._rect.y
     
 
     #Retorna a velocidade da nave inimiga   
-    #@property
+    @property
     def speed(self):
-        return self.x_speed,self.y_speed
+        return self._speed
     
 
     #Retorna se a nave inimiga está viva
-    #@property
-    def get_is_alive(self):
-        return self.is_alive
+    @property
+    def is_alive(self):
+        return self._is_alive
     
 
     #Retorna o score da nave inimiga 
-    #@property
-    def get_score(self):
-        return self.score
+    @property
+    def score(self):
+        return self._score
     
     #Retorna o intervalo de tiro da nave inimiga 
-    #@property
-    def get_shoot_delay(self):
-        return self.shoot_delay
+    @property
+    def shoot_delay(self):
+        return self._shoot_delay
     
     #Retorna o último tiro da nave inimiga 
-    #@property
-    def get_last_shot(self):
-        return self.last_shot
+    @property
+    def last_shot(self):
+        return self._last_shot
     
-
+    #Altera a propriedade speed
+    @speed.setter
+    def speed(self,new_speed):
+        self._speed = new_speed
+    
+    
     #Altera a propriedade is_alive
-    #@set.get_is_alive
-    def set_is_alive(self,life_status):
-        self.is_alive = life_status
+    @is_alive.setter
+    def is_alive(self,life_status):
+        self._is_alive = life_status
         
         #Caso o asteroide ultrapasse as bordas, crie outro
         if self.rect.bottom < 0:
@@ -637,16 +656,26 @@ class Enemy_ship(Enemy):
             self.kill()
             
     #Altera a propriedade score
-    #@set.get_score
-    def set_score(self,new_score):
-        self.score = new_score
+    @score.setter
+    def score(self,new_score):
+        self._score = new_score
         
+    #Altera a propriedade shoot_delay
+    @shoot_delay.setter
+    def shoot_delay(self,new_shoot_delay):
+        self._shoot_delay = new_shoot_delay
+        
+    #Altera a propriedade last_shot
+    @last_shot.setter
+    def last_shot(self,new_last_shot):
+        self._last_shot = new_last_shot
+    
     #Permite que a nave inimiga atire
     def shoot(self,speed_x,speed_y):
         shoot_sound = pygame.mixer.Sound(os.path.join(st.sound_folder,"Laser_Shoot4.wav"))
-        shoot_sound.set_volume(0.5)
+        shoot_sound.set_volume(0.3)
         bullet = Bullet(self.rect.centerx,self.rect.top)
-        bullet.set_speed(speed_x, speed_y) 
+        bullet.speed = (speed_x, speed_y) 
         st.all_sprites.add(bullet)
         st.enemies_bullets.add(bullet)
         shoot_sound.play()
@@ -660,8 +689,8 @@ class Enemy_ship(Enemy):
            
     #Permite que a nave inimiga se movimente   
     def update(self):
-        self.y_speed = -1
-        self.rect.y += self.y_speed
+        self.speed = (self.speed[0],-1)
+        self.rect.y += self.speed[1]
 
 class Item(pygame.sprite.Sprite, ABC):
     def __init__(self, image):
@@ -691,6 +720,11 @@ class Item(pygame.sprite.Sprite, ABC):
     @abstractmethod
     def disappear(self):
         self.kill()
+    @abstractmethod
+    def collect_sound(self):
+        collect_sound = pygame.mixer.Sound(os.path.join(st.sound_folder,"Powerup.wav"))
+        collect_sound.set_volume(1)
+        collect_sound.play()
 
 class StarShooter(Item):
     def __init__(self):
@@ -703,6 +737,11 @@ class StarShooter(Item):
 
     def disappear(self):
         self.kill()
+        
+    def collect_sound(self):
+        collect_sound = pygame.mixer.Sound(os.path.join(st.sound_folder,"Powerup.wav"))
+        collect_sound.set_volume(1)
+        collect_sound.play()
 
 class Shield(Item):
     def __init__(self):
@@ -715,5 +754,10 @@ class Shield(Item):
 
     def disappear(self):
         self.kill()
+    
+    def collect_sound(self):
+        collect_sound = pygame.mixer.Sound(os.path.join(st.sound_folder,"Powerup.wav"))
+        collect_sound.set_volume(1)
+        collect_sound.play()
 
 

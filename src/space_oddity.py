@@ -238,9 +238,9 @@ class Game():
             #Cria casos de colisão entre balas do jogador e asteroides
             bullet_hits_asteroid = pygame.sprite.groupcollide(st.asteroids, st.bullets, True, True)
             for hitted_asteroid in bullet_hits_asteroid:
-                asteroid_score = hitted_asteroid.get_score()
-                player_old_score = player.get_score()
-                player.set_score(player_old_score+asteroid_score) 
+                asteroid_score = hitted_asteroid.score
+                player_old_score = player.score
+                player.score = player_old_score+asteroid_score
                 
                 #Exibe explosão
                 explosion = ge.Explosion(hitted_asteroid.rect.center,"large")
@@ -255,9 +255,9 @@ class Game():
             #Cria casos de colisão entre balas do jogador e naves inimigas    
             bullet_hits_enemy_ship = pygame.sprite.groupcollide(st.enemy_ships,st.bullets, True, True)
             for hitted_enemy_ship in bullet_hits_enemy_ship:
-                enemy_score = hitted_enemy_ship.get_score()
-                player_old_score = player.get_score()
-                player.set_score(player_old_score+enemy_score) 
+                enemy_score = hitted_enemy_ship.score
+                player_old_score = player.score
+                player.score = player_old_score+enemy_score 
                 
                 #Exibe explosão
                 explosion = ge.Explosion(hitted_enemy_ship.rect.center,"small")
@@ -274,11 +274,11 @@ class Game():
                 st.all_sprites.add(explosion) 
                 
                 #Diminui a vida do jogador
-                life = player.get_life()
+                life = player.life
                 damage = 1
-                player.set_life(life - damage)
-                if player.get_life() <= 0:
-                    running =  self.player_dies(running, player.get_score()) 
+                player.life = life - damage
+                if player.life <= 0:
+                    running =  self.player_dies(running, player.score) 
                 
             #Cria casos de colisão entre balas do inimigo e o jogador    
             enemy_shoots_player = pygame.sprite.spritecollide(
@@ -291,11 +291,11 @@ class Game():
                 st.all_sprites.add(explosion) 
                 
                 #Diminui a vida do jogador
-                life = player.get_life()
+                life = player.life
                 damage = 1
-                player.set_life(life - damage)
-                if player.get_life() <= 0:
-                    running = self.player_dies(running, player.get_score())  
+                player.life = life - damage
+                if player.life <= 0:
+                    running = self.player_dies(running, player.score)  
                 
             #Cria casos de colisão entre nave inimiga e o jogador    
             enemy_hits_player = pygame.sprite.spritecollide(
@@ -308,21 +308,22 @@ class Game():
                 st.all_sprites.add(explosion) 
                 
                 #Diminui a vida do jogador
-                life = player.get_life()
+                life = player.life
                 damage = 1
-                player.set_life(life - damage)
-                if player.get_life() <= 0:
-                    running =  self.player_dies(running, player.get_score()) 
+                player.life = life - damage
+                if player.life <= 0:
+                    running =  self.player_dies(running, player.score) 
                 
             
             #Cria casos de colisão entre bônus e o jogador
             player_hits_bonus = pygame.sprite.spritecollide(player.hitbox, st.powers, True, pygame.sprite.collide_circle)
             
             for hitted_bonus in player_hits_bonus:
+                hitted_bonus.collect_sound()
                 #Caso seja um escudo, adicione vidas ao a jogador
                 if hitted_bonus.type == "shield":
-                    initial_lifes = player.get_life()
-                    player.set_life(initial_lifes + 1)
+                    initial_lifes = player.life
+                    player.life = initial_lifes + 1
                 #Caso seja uma arma, adicione uma arma mais poderosa ao jogador
                 if hitted_bonus.type == "star":
                     player.gain_powerup()
@@ -355,10 +356,10 @@ class Game():
             # Insere o score na tela
 
             #Adiciona a pontuação no topo da tela
-            self.draw_text(screen, f"Score: {str(player.get_score())}", 40, st.WIDTH/2, 10,(255,255,255))
+            self.draw_text(screen, f"Score: {str(player.score)}", 40, st.WIDTH/2, 10,(255,255,255))
             
             #Adiciona os escudos no cando superior direito da tela
-            self.draw_text(screen, f"Shields: {str(player.get_life()-1)}", 20, st.WIDTH * (7/8), 10,(255,255,255))
+            self.draw_text(screen, f"Shields: {str(player.life - 1)}", 20, st.WIDTH * (7/8), 10,(255,255,255))
             
             # Atualize as imagens dos objetos quando ocorrerem mudanças
             pygame.display.flip()
