@@ -26,18 +26,9 @@ clock = pygame.time.Clock()
 # Define a classe principal do jogo, responsável pelas telas e ações da aplicação
 class Game():
 
-    # Crie um st.background
-    st.background = pygame.image.load(os.path.join(st.img_folder, "space_pattern.jpg"))
-    # Caso a tela seja maior que a imagem, redimensione a imagem de fundo
-    if st.WIDTH > st.background.get_width():
-        st.background = pygame.transform.scale(st.background, (st.WIDTH, st.WIDTH))
-
-    # Armazene a altura desse st.background
-    st.background_height = st.background.get_height()
-
     # Som de st.background
     pygame.mixer.music.load(os.path.join(st.sound_folder, "som1.mp3"))
-    pygame.mixer.music.set_volume(0.5)
+    pygame.mixer.music.set_volume(0.2)
 
     # Crie um grupo para todos os sprites
     st.all_sprites = pygame.sprite.Group()
@@ -76,6 +67,7 @@ class Game():
 
     # Crie um método para o menu principal
     def menu(self):
+        self.load_background("space_menu.jpg")
 
         # Define referências de posições para os botões, ao centro da tela
         x_centered = st.WIDTH / 2
@@ -86,7 +78,6 @@ class Game():
         scores_button = it.Button(text="SCORES", x=x_centered, y=y_centered-30, width=200, height=25)
         intructions_button = it.Button(text="INSTRUCTIONS", x=x_centered, y=y_centered, width=200, height=25)
         exit_button = it.Button(text="EXIT", x=x_centered, y=y_centered+30, width=200, height=25)
-        back_button = it.Button(text="BACK TO GAME", x=x_centered, y=y_centered+60, width=200, height=25)
 
         # # Lê os dados dos high scores a partir do arquivo ".save/scores.txt"
         # scores_filepath = os.path.join(st.save_folder, "scores.txt")
@@ -106,9 +97,8 @@ class Game():
         while self.in_menu:
 
             # Carrega a imagem de fundo do menu
-            # screen.blit(menuBg, (0, 0))
-
-            screen.fill(st.WHITE)
+            # screen.fill(st.WHITE)
+            screen.blit(st.background, (0, 0))
 
             # Desenha os botões na tela
             play_button.draw(screen, (0,0,0))
@@ -156,6 +146,7 @@ class Game():
             pygame.display.flip()
 
     def run_game(self):
+        self.load_background("space_pattern.jpg")
         
         #Crie uma variável para o deslizamento da tela
         scrolling = 0
@@ -200,7 +191,6 @@ class Game():
                 start_level_time = pygame.time.get_ticks()
                 level += 1
             
-            
             # Faça o jogo reagir a eventos externos
             for event in pygame.event.get():
                 # Permita que o usuário saia do jogo
@@ -210,6 +200,10 @@ class Game():
                 elif event.type == pygame.KEYDOWN:
                     if event.key == pygame.K_ESCAPE:
                         self.pause, running = self.paused()
+
+            # Caso a instrução seja de retornar ao menu, ele encerra o loop do jogo imediatamente
+            if not running:
+                break
 
             # Atualiza os sprites
             st.all_sprites.update()
@@ -312,8 +306,11 @@ class Game():
                 damage = 1
                 player.set_life(life - damage)
                 if player.get_life() <= 0:
-                    running =  self.player_dies(running, player.get_score()) 
-                
+                    running =  self.player_dies(running, player.get_score())
+
+            # Caso a instrução seja de retornar ao menu, ele encerra o loop do jogo imediatamente
+            if not running:
+                break
             
             #Cria casos de colisão entre bônus e o jogador
             player_hits_bonus = pygame.sprite.spritecollide(player.hitbox, st.powers, True, pygame.sprite.collide_circle)
@@ -374,6 +371,9 @@ class Game():
 
     # Método que pausa o jogo
     def paused(self):
+
+        self.load_background("space_pause.png")
+
         # Altera o estado da variável que controla o loop de pause
         self.pause = True
 
@@ -389,10 +389,11 @@ class Game():
         while self.pause:
 
             # Preenche a tela com a cor branca
-            screen.fill(st.WHITE)
+            # screen.fill(st.WHITE)
+            screen.blit(st.background, (0, 0))
 
             # Imprime o texto "PAUSE" na tela
-            self.draw_text(screen, "Jogo pausado", 80, x_centered, y_centered-150, st.BLACK)
+            self.draw_text(screen, "Jogo pausado", 80, x_centered, y_centered-150, st.WHITE)
 
             # Desenha os botões da tela de pause
             back_to_menu.draw(screen, (0,0,0))
@@ -412,6 +413,8 @@ class Game():
                     # Caso o usuário aperte o botão ESC, ele deve sair da tela de pause e voltar ao jogo
                     if event.key == pygame.K_ESCAPE:
                         self.pause = False
+                        self.load_background("space_pattern.jpg")
+                        
                         return False, True
 
                 # Caso o usuário clique com o botão esquerdo do mouse
@@ -425,6 +428,8 @@ class Game():
                     # Caso o usuário clique no botão de voltar ao jogo
                     elif back_to_game.is_over(pos):
                         self.pause = False
+                        self.load_background("space_pattern.jpg")
+
                         return False, True
 
                 else:
@@ -436,6 +441,8 @@ class Game():
 
     # Método que exibe a tela de game over
     def game_over(self, player_score):
+        self.load_background("space_gameover.jpg")
+
         # Altera o estado da variável que controla o loop de game over
         self.over = True
 
@@ -451,15 +458,16 @@ class Game():
         while self.over:
             
             # Preenche o fundo da tela com a cor branca
-            screen.fill(st.WHITE)
+            # screen.fill(st.WHITE)
+            screen.blit(st.background, (0, 0))
 
             # Imprime uma mensagem de "Game Over" na tela
-            self.draw_text(screen, "GAME OVER", 100, x_centered, y_centered - 250, st.BLACK)
+            self.draw_text(screen, "GAME OVER", 100, x_centered, y_centered - 250, st.WHITE)
             # Imprime a pontuação do jogador na tela
-            self.draw_text(screen, f"Score: {str(player_score)}", 50, x_centered, y_centered - 100, st.BLACK)
+            self.draw_text(screen, f"Score: {str(player_score)}", 50, x_centered, y_centered - 100, st.WHITE)
 
             # Imprime um rótulo para a caixa de nome do usuário
-            self.draw_text(screen, "Digite seu nome:", 30, x_centered, y_centered - 50, st.BLACK)
+            self.draw_text(screen, "Digite seu nome:", 30, x_centered, y_centered - 50, st.WHITE)
 
             # Desenha a caixa de texto para o nome do usuário
             player_name_box.update()
@@ -635,6 +643,16 @@ class Game():
         text_rect = text_surface.get_rect()
         text_rect.midtop = (x, y)
         surface.blit(text_surface, text_rect)
+
+    def load_background(self, background_image_filename):
+        # Carrega a imagem de fundo do jogo
+        st.background = pygame.image.load(os.path.join(st.img_folder, background_image_filename))
+        # Caso a tela seja maior que a imagem, redimensione a imagem de fundo
+        if st.WIDTH > st.background.get_width():
+            st.background = pygame.transform.scale(st.background, (st.WIDTH, st.WIDTH))
+
+        # Armazene a altura desse st.background
+        st.background_height = st.background.get_height()
 
 ##########################
 

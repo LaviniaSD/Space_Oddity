@@ -55,7 +55,7 @@ enemies_bullets = pygame.sprite.Group()
 powers = pygame.sprite.Group()
 
 # Crie um background
-background = pygame.image.load(os.path.join(img_folder, "space.jpg"))
+background = pygame.image.load(os.path.join(img_folder, "space_pattern.jpg"))
 
 # Armazene a altura desse background
 background_height = background.get_height()
