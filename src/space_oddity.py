@@ -214,9 +214,11 @@ class Game():
             
             # Gera bônus aleatoriamente na tela
             if random.random() < 0.005:
-                power = ge.Power()
-                st.powers.add(power)
-                st.all_sprites.add(power)
+                star_power = ge.StarShooter()
+                shield_power = ge.Shield()
+                power_up = random.choice([star_power, shield_power])
+                st.powers.add(power_up)
+                st.all_sprites.add(power_up)
 
                 
             #Spawna asteroides em intervalos de 3 ou menos segundos (dependendo do nível)
@@ -278,6 +280,7 @@ class Game():
             #Cria casos de colisão entre balas do inimigo e o jogador    
             enemy_shoots_player = pygame.sprite.spritecollide(
                 player.hitbox, st.enemies_bullets, True, pygame.sprite.collide_circle)
+
             if enemy_shoots_player:
                 #Exibe explosão
                 explosion = ge.Explosion(player.rect.center,"large")
@@ -294,6 +297,7 @@ class Game():
             #Cria casos de colisão entre nave inimiga e o jogador    
             enemy_hits_player = pygame.sprite.spritecollide(
                 player.hitbox, st.enemy_ships, False, pygame.sprite.collide_circle)
+
             if enemy_hits_player:
                 #Exibe explosão
                 explosion = ge.Explosion(player.rect.center,"large")
@@ -317,7 +321,7 @@ class Game():
                     initial_lifes = player.get_life()
                     player.set_life(initial_lifes + 1)
                 #Caso seja uma arma, adicione uma arma mais poderosa ao jogador
-                if hitted_bonus.type == "gun":
+                if hitted_bonus.type == "star":
                     player.gain_powerup()
                
 
