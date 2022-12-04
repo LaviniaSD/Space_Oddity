@@ -35,7 +35,7 @@ class Button():
         
         # Caso o botão tenha texto, desenha o texto
         if self.text != "":
-            text_surface = st.font.render(self.text, 1, self.text_color)
+            text_surface = st.font_bold.render(self.text, 1, self.text_color)
             screen.blit(text_surface, (self.x + (self.width/2 - text_surface.get_width()/2), self.y + (self.height/2 - text_surface.get_height()/2)))
 
         # Recolhe a posição do mouse
@@ -79,7 +79,7 @@ class InputTextBox():
 
         # Defina propriedades secundárias do componente
         self.outline_color = InputTextBox.COLOR_INACTIVE
-        self.text_surface = st.font.render(text, True, text_color)
+        self.text_surface = st.font_bold.render(text, True, text_color)
         self.active = False
         self.rect = pygame.Rect(self.x, self.y, self.width, self.height)
 
@@ -114,7 +114,7 @@ class InputTextBox():
                         self.text += event.unicode
 
                 # Atualize a superfície de texto
-                self.text_surface = st.font.render(self.text, True, self.outline_color)
+                self.text_surface = st.font_bold.render(self.text, True, self.outline_color)
 
     # Método para atualizar o tamanho da caixa de texto caso o texto seja maior que o tamanho da caixa   
     def update(self):

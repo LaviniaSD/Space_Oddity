@@ -599,14 +599,8 @@ class Game():
         pygame.quit()
         sys.exit()
 
-    #Inicia o pygame
-    # pygame.init()
-
-    # font_name =pygame.font.SysFont("arcade", 20)
-    # font_name = pygame.font.Font("./src/fonts/DigitalDisco.ttf", 20)
-
     # Crie uma função para exibição de texto
-    def draw_text(self, surface, text, size, x, y, color):
+    def draw_text(self, surface, text, size, x, y, color, font_name=st.font_name_bold):
         """Exibe um texto em uma superfície, o conteúdo do texto, tamanho, cor, posição e 
         a superfície são dados como parâmetro.
         
@@ -633,8 +627,6 @@ class Game():
         """
         
         # Crie uma variável para a fonte utilizada
-        font_name = pygame.font.match_font("arial")
-
         font = pygame.font.Font(font_name, size)
         text_surface = font.render(text, False, color)
         text_rect = text_surface.get_rect()

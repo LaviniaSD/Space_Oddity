@@ -29,8 +29,12 @@ WHITE = (255, 255, 255)
 BLACK = (0, 0, 0)
 MAGENTA = (194,9,84)
 
-#Define a fonte utilizada no jogo
-font = pygame.font.SysFont("arcade", 20)
+#Define as fontes utilizadas no jogo
+font_name_bold = os.path.join(font_folder, "DigitalDisco.ttf")
+font_name_thin = os.path.join(font_folder, "DigitalDisco-Thin.ttf")
+
+font_bold = pygame.font.Font(font_name_bold, 20)
+font_thin = pygame.font.Font(font_name_thin, 20)
 
 # Crie um grupo para todos os sprites
 all_sprites = pygame.sprite.Group()
