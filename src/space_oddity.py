@@ -391,46 +391,72 @@ class Game():
             pygame.display.update()
             clock.tick(st.FPS)
 
-    def game_over(self, score):
+    def game_over(self, player_score):
+        # Altera o estado da variável que controla o loop de game over
         self.over = True
 
         # Define referências de posições para os botões, ao centro da tela
         x_centered = st.WIDTH / 2
         y_centered = st.HEIGHT / 2
 
+        # Inicializa os componentes da interface que estarao na tela de game over
         player_name_box = it.InputTextBox(x_centered, y_centered, 200, max_input_length=20)
-        ok_button = it.Button(text="Salvar score", x=x_centered, y=y_centered+50, width=200, height=25)
+        save_score_button = it.Button(text="Salvar score", x=x_centered, y=y_centered+50, width=200, height=25)
 
+        # Inicia um loop para a exibição da tela de game over
         while self.over:
-
+            
+            # Preenche o fundo da tela com a cor branca
             screen.fill(st.WHITE)
 
             # Imprime uma mensagem de "Game Over" na tela
             self.draw_text(screen, "GAME OVER", 100, x_centered, y_centered - 250, st.BLACK)
             # Imprime a pontuação do jogador na tela
-            self.draw_text(screen, f"Score: {str(score)}", 50, x_centered, y_centered - 100, st.BLACK)
+            self.draw_text(screen, f"Score: {str(player_score)}", 50, x_centered, y_centered - 100, st.BLACK)
 
             # Imprime um rótulo para a caixa de nome do usuário
             self.draw_text(screen, "Digite seu nome:", 30, x_centered, y_centered - 50, st.BLACK)
 
+            # Desenha a caixa de texto para o nome do usuário
             player_name_box.update()
             player_name_box.draw(screen)
 
-            ok_button.draw(screen, (0,0,0))
+            # Desenha o botão para salvar o score
+            save_score_button.draw(screen, (0,0,0))
 
             for event in pygame.event.get():
+                # Recolhe a posição atual do mouse
+                pos = pygame.mouse.get_pos()
 
+                # Atualiza o comportamento da caixa de texto de acordo com o evento
                 player_name_box.handle_event(event)
 
+                # Caso o usuário feche a janela
                 if event.type == pygame.QUIT:
                     self.quit_game()
+
+                # Caso o usuário aperte alguma tecla
                 elif event.type == pygame.KEYDOWN:
+                    # Caso o usuário aperte o botão ESC
                     if event.key == pygame.K_ESCAPE:
+                        self.over = False
                         return False
+                    # Caso o usuário aperte o botão ENTER
                     elif event.key == pygame.K_RETURN:
                         self.over = False
                         return False
 
+                # Caso o usuário clique com o botão esquerdo do mouse
+                elif event.type == pygame.MOUSEBUTTONDOWN:
+                    # Caso o usuário clique no botão de play
+                    if save_score_button.is_over(pos):
+                        # Salva o score do jogador
+                        # COLOCA A SUA FUNCAO AQUI, no lugar do 'print()'
+                        print(player_score)
+                    else:
+                        pass
+            
+            # Atualiza a tela e o clock
             pygame.display.update()
             clock.tick(st.FPS)
 
