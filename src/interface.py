@@ -5,8 +5,6 @@
 import pygame
 import setup as st
 
-#Button
-#InputTextBox
 
 #Classe para a criação de botões
 class Button():
@@ -86,6 +84,7 @@ class Button():
                 return True
                 
         return False
+        
         
 #Classe para a digitação de texto
 class InputTextBox():

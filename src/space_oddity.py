@@ -85,7 +85,16 @@ class Game():
 
     
     def scores(self):
+        """Exibe o score dos jogadores
 
+
+        Returns
+        -------
+        str
+            Variável que será lida pela função 'mainloop', indicando a próxima tela a ser exibida, após uma interação do usuário.
+
+        """
+        # Carrega uma imagem
         self.load_background("space_menu.jpg")
 
         # Define referências de posições para os botões, ao centro da tela
@@ -95,6 +104,7 @@ class Game():
         # Instancia os botões do scores
         exit_button = it.Button(text="EXIT", x=x_centered, y=y_centered+250, width=200, height=30, font_size=25)
 
+        # Ordenando os scores dos jogadores
         dict_score = self.load_score()
         if not dict_score:
             dict_score = dict()
@@ -116,6 +126,7 @@ class Game():
 
             y_score = y_centered - 120
 
+            # Inserindo conteúdo na página
             for index in range(0, min(len(high_score_list), top_places)):
                 name = high_score_list[index][0]
                 score = high_score_list[index][1]
@@ -301,7 +312,6 @@ class Game():
             # Atualiza os sprites
             st.all_sprites.update()
             
-            
             # Gera bônus aleatoriamente na tela
             if random.random() < 0.005:
                 star_power = ge.StarShooter()
@@ -309,7 +319,6 @@ class Game():
                 power_up = random.choice([star_power, shield_power])
                 st.powers.add(power_up)
                 st.all_sprites.add(power_up)
-
                 
             #Spawna asteroides em intervalos de 3 ou menos segundos (dependendo do nível)
             now = pygame.time.get_ticks()
@@ -420,7 +429,6 @@ class Game():
                 if hitted_bonus.type == "star":
                     player.gain_powerup()
                
-            
             # Exibe o hitbox caso o jogador pressione "Shift"
             keys_pressed = pygame.key.get_pressed()
 
@@ -428,7 +436,6 @@ class Game():
                 player.hitbox.set_visible(True)
             elif not keys_pressed[pygame.K_LSHIFT]:
                 player.hitbox.set_visible(False)
-
 
             # Defina a imagem de fundo da tela
             screen.fill((0, 0, 0))
@@ -442,7 +449,6 @@ class Game():
             if abs(scrolling)>st.background_height:
                 scrolling = 0
             
-
             # Desenha os sprites na tela
             st.all_sprites.draw(screen)
 
@@ -551,8 +557,20 @@ class Game():
             pygame.display.update()
             clock.tick(st.FPS)
 
-
     def load_score(self):
+        """Armazena o load dos scores anteriores
+        
+
+        Returns
+        -------
+        dict
+            Retorna dicionário com o conteúdo dos scores anteriores
+        None
+            Retorna None caso não tenha dado de scores anteriores
+
+        """
+
+        # Caminho do arquivo
         score_filepath = os.path.join(st.save_folder, "scores.json")
         try:
             with open (score_filepath, "r") as file:
@@ -562,9 +580,28 @@ class Game():
             return None
 
     def save_score(self, player_name_box, player_score):
+        """Salva o score do jogo
+        
+
+        Parameters
+        ----------
+        player_name_box : interface.InputTextBox
+            Nome do jogador
+        player_score : int
+            Score do jogador.
+
+        Returns
+        -------
+        bool
+            O estado do game over, que é falsa, pois demarca o fim do ciclo de game over.
+
+        """
+
+        # Carregando dicionário com score dos jogadores
         dict_score = self.load_score()
         player_name = player_name_box.text
 
+        # Jogador deve inserir um nome
         if not player_name:
             return False
 
@@ -573,6 +610,7 @@ class Game():
     
         score_player = dict_score.get(player_name)
 
+        # Tratamento do high score desse jogador
         if not score_player:
             dict_score[player_name] = player_score
         
@@ -581,7 +619,8 @@ class Game():
 
         else:
             pass
-
+        
+        # Ajustando o high score desse jogador no arquivo save
         try:
             score_filepath = os.path.join(st.save_folder, "scores.json")
             with open(score_filepath, "w") as out_file:
@@ -595,9 +634,7 @@ class Game():
 
 
     # Método que exibe a tela de game over
-    def game_over(self, player_score):
-
-        
+    def game_over(self, player_score):        
         """Cria a tela de game over
         
 
@@ -612,7 +649,7 @@ class Game():
             O estado do game over, que é falsa, pois demarca o fim do ciclo de game over.
 
         """
-
+        #Som de game over
         game_over_sound = pygame.mixer.Sound(os.path.join(st.sound_folder,"game_over.mp3"))
         game_over_sound.set_volume(0.5)
         game_over_sound.play()
