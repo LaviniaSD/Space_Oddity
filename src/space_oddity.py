@@ -204,6 +204,11 @@ class Game():
                     
                     # Caso o usuário clique no botão de play
                     if play_button.is_over(pos):
+                        #Som de início de game
+                        play_game_sound = pygame.mixer.Sound(os.path.join(st.sound_folder,"play_game.mp3"))
+                        play_game_sound.set_volume(0.5)
+                        play_game_sound.play()
+
                         self.in_menu = False
                         return "game"
         
@@ -607,6 +612,11 @@ class Game():
             O estado do game over, que é falsa, pois demarca o fim do ciclo de game over.
 
         """
+
+        game_over_sound = pygame.mixer.Sound(os.path.join(st.sound_folder,"game_over.mp3"))
+        game_over_sound.set_volume(0.5)
+        game_over_sound.play()
+
         score_saved = False
         self.load_background("space_gameover.jpg")
 
