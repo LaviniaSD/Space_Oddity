@@ -355,8 +355,22 @@ class Player(pygame.sprite.Sprite):
             
 #Classe abstrata para inimigos
 class Enemy(pygame.sprite.Sprite, ABC):
-    def __init__(self):
+    def __init__(self, image):
         pygame.sprite.Sprite.__init__(self)
+
+        #Define a imagem 
+        self.image = image        
+
+        #Cria a reta e o círculo para posicionar a classe
+        self.rect = self.image.get_rect()
+        self.radius = 0        
+    
+        
+        #Define uma velocidade aleatória 
+        self.speed = 0   
+        
+        #Define o score 
+        self.score = 0
 
     @abstractmethod
     def position(self):
@@ -379,9 +393,8 @@ class Enemy(pygame.sprite.Sprite, ABC):
 class Asteroid(Enemy):
     #Características iniciais da classe quando ela é iniciada
     def __init__(self):
-        
-        #Cria opções de asteroides
-        super().__init__()
+
+        pygame.sprite.Sprite.__init__(self)
 
         asteroids_list = ["asteroid.png",
                             "asteroid2.png",
@@ -414,13 +427,11 @@ class Asteroid(Enemy):
         #Define a imagem do asteroide  
         self.image = random.choice(asteroids_images)
         self.image.set_colorkey((0,0,0))
-        
 
-        #Cria a reta e o círculo para posicionar a classe
         self.rect = self.image.get_rect()
+        
         self.radius = int(self.rect.width * 0.90 / 2)
-        
-        
+                
         #Orienta a posição inicial do asteroide
         self.rect.x = random.randrange(st.WIDTH - self.rect.width)
         self.rect.y = random.randrange(-40,-15)
@@ -428,7 +439,6 @@ class Asteroid(Enemy):
         #Define uma velocidade aleatória para cada asteroide
         self.speed = (random.randrange(-5,5),random.randrange(1,10))
     
-        
         #Define o score do asteroide (quanto ele vale).
         self.score = 100-self.radius
         
@@ -603,13 +613,13 @@ class EnemyShip(Enemy):
     def __init__(self):
         
         #Adiciona uma imagem à nave inimiga
-        super().__init__()
 
         self.image = pygame.image.load(os.path.join(st.img_folder,"enemy_ship.png")).convert()
         self.image = pygame.transform.scale(self.image, (64, 64))
         self.image.set_colorkey((255,255,255))
-        
-        
+
+        super().__init__(self.image)
+                
         #Cria a reta e o círculo para posicionar a classe
         self.rect = self.image.get_rect()
         self.radius = 28
