@@ -479,8 +479,17 @@ class Game():
             pygame.display.update()
             clock.tick(st.FPS)
 
+
+    def load_score(self):
+        score_filepath = os.path.join(st.save_folder, "scores.json")
+        with open (score_filepath, "r") as file:
+            dict_score = json.load(file)
+        return dict_score
+
     # Método que exibe a tela de game over
     def game_over(self, player_score):
+
+        
         """Cria a tela de game over
         
 
@@ -559,6 +568,7 @@ class Game():
                     if save_score_button.is_over(pos):
                         # Salva o score do jogador
                         # COLOCA A SUA FUNCAO AQUI, no lugar do "print()"
+                        
                         print(player_score)
 
                     # Caso o usuário clique no botão de voltar ao menu
