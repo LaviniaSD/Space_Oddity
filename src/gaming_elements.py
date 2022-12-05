@@ -10,14 +10,6 @@ import setup as st
 from abc import ABC, abstractmethod
 from threading import Timer 
 
-#Hitbox
-#Bullet
-#Player
-#Enemy
-#Asteroid
-#Explosion
-#Enemy_ship
-#Power
 
 #Classe para o hitbox do jogador
 class Hitbox(pygame.sprite.Sprite):
@@ -71,7 +63,6 @@ class Hitbox(pygame.sprite.Sprite):
         None.
 
         """
-        
         
         #Muda a imagem dependendo da visibilidade
         if visible:
@@ -235,7 +226,6 @@ class Player(pygame.sprite.Sprite):
     @speed.setter
     def speed(self,new_speed):
         self._speed = new_speed
-       
     
     #Altera a propriedade life
     @life.setter
@@ -353,6 +343,8 @@ class Player(pygame.sprite.Sprite):
         self.power += 1
         self.power_time = pygame.time.get_ticks()
             
+
+
 #Classe abstrata para inimigos
 class Enemy(pygame.sprite.Sprite, ABC):
     def __init__(self, image):
@@ -364,7 +356,6 @@ class Enemy(pygame.sprite.Sprite, ABC):
         #Cria a reta e o círculo para posicionar a classe
         self.rect = self.image.get_rect()
         self.radius = 0        
-    
         
         #Define uma velocidade aleatória 
         self.speed = 0   
@@ -393,7 +384,6 @@ class Enemy(pygame.sprite.Sprite, ABC):
 class Asteroid(Enemy):
     #Características iniciais da classe quando ela é iniciada
     def __init__(self):
-
         pygame.sprite.Sprite.__init__(self)
 
         asteroids_list = ["asteroid.png",
@@ -442,7 +432,6 @@ class Asteroid(Enemy):
         #Define o score do asteroide (quanto ele vale).
         self.score = 100-self.radius
         
-   
     #Retorna a posição do asteroide    
     @property
     def position(self):
@@ -452,7 +441,6 @@ class Asteroid(Enemy):
     @property
     def speed(self):
         return self._speed
-    
 
     #Retorna o score que o asteroide dará ao jogador quando destruído
     @property
@@ -468,7 +456,6 @@ class Asteroid(Enemy):
     @speed.setter
     def speed(self,new_speed):
         self._speed = new_speed
-        
             
     #Muda a posição do asteroide
     def update(self):
@@ -485,7 +472,6 @@ class Asteroid(Enemy):
     
 #Crie uma classe para explosões
 class Explosion(pygame.sprite.Sprite):
-    
     
     def __init__(self,center,size):
         """Construtor da classe Explosion
@@ -520,7 +506,6 @@ class Explosion(pygame.sprite.Sprite):
             
             small_image = pygame.transform.scale(image,(32,32))
             explosion_animation["small"].append(small_image)
-        
         
         #Define o tamanho da explosão (grande ou pequena)
         self.size = size
@@ -606,14 +591,12 @@ class Explosion(pygame.sprite.Sprite):
         explosion_sound.play()
    
 
-
 #Cria a classe para as naves inimigas             
 class EnemyShip(Enemy):    
     #Características iniciais da classe quando ela é iniciada
     def __init__(self):
         
         #Adiciona uma imagem à nave inimiga
-
         self.image = pygame.image.load(os.path.join(st.img_folder,"enemy_ship.png")).convert()
         self.image = pygame.transform.scale(self.image, (64, 64))
         self.image.set_colorkey((255,255,255))
@@ -645,13 +628,10 @@ class EnemyShip(Enemy):
     def position(self):
         return self._rect.x,self._rect.y
     
-
     #Retorna a velocidade da nave inimiga   
     @property
     def speed(self):
         return self._speed
-    
-
     
     #Retorna o score da nave inimiga 
     @property
@@ -673,7 +653,6 @@ class EnemyShip(Enemy):
     def speed(self,new_speed):
         self._speed = new_speed
     
-            
     #Altera a propriedade score
     @score.setter
     def score(self,new_score):
@@ -728,6 +707,7 @@ class EnemyShip(Enemy):
         self.speed = (self.speed[0],-1)
         self.rect.y += self.speed[1]
 
+
 #Classe abstrata para os itens bônus
 class Item(pygame.sprite.Sprite, ABC):
     def __init__(self, image):
@@ -737,7 +717,6 @@ class Item(pygame.sprite.Sprite, ABC):
         self.image = image
         self.image = pygame.transform.scale(self.image, (32, 32))
         self.image.set_colorkey((0,0,0))
-        
         
         #Define o tipo
         self.type = None
@@ -768,7 +747,6 @@ class StarShooter(Item):
     
     #Construtor da classe StarShooter
     def __init__(self):
-
         image = pygame.image.load(os.path.join(st.img_folder,"star.png")).convert()
 
         super().__init__(image)
@@ -786,6 +764,7 @@ class StarShooter(Item):
         collect_sound = pygame.mixer.Sound(os.path.join(st.sound_folder,"Powerup.wav"))
         collect_sound.set_volume(1)
         collect_sound.play()
+
 
 #Classe para o bônus de escudo
 class Shield(Item):
@@ -809,5 +788,3 @@ class Shield(Item):
         collect_sound = pygame.mixer.Sound(os.path.join(st.sound_folder,"Powerup.wav"))
         collect_sound.set_volume(1)
         collect_sound.play()
-
-
