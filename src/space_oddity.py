@@ -690,7 +690,7 @@ class Game():
 
         """
         
-        enemy = ge.Enemy_ship()
+        enemy = ge.EnemyShip()
         enemy.enemy_shoots()
         enemy_ships_group.add(enemy)
         all_sprites_group.add(enemy)

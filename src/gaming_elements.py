@@ -598,7 +598,7 @@ class Explosion(pygame.sprite.Sprite):
 
 
 #Cria a classe para as naves inimigas             
-class Enemy_ship(Enemy):    
+class EnemyShip(Enemy):    
     #Características iniciais da classe quando ela é iniciada
     def __init__(self):
         
