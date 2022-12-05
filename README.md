@@ -34,7 +34,7 @@ Para entender e executar esse projeto siga as seguintes instruções:
 pip install -r requirements.txt
 ```
 
-- [ ] Para entender as regras do jogo, acesse o arquivo <b>index</b> na pasta <b>instructions</b>.
+- [ ] Para entender as regras do jogo, acesse o arquivo <b>instructions</b> na pasta <b>instructions</b>.
 - [ ] Para iniciar o jogo, execute o arquivo main.py.
 - [ ] Para visualizar os diagramas UML e de classes utilizados como base do projeto, acesse a pasta <b>Diagrams</b>.
 - [ ] Para ler os arquivos que contém as classes e os loops do jogo acesse a pasta <b>src</b>.
