@@ -482,9 +482,45 @@ class Game():
 
     def load_score(self):
         score_filepath = os.path.join(st.save_folder, "scores.json")
-        with open (score_filepath, "r") as file:
-            dict_score = json.load(file)
-        return dict_score
+        try:
+            with open (score_filepath, "r") as file:
+                dict_score = json.load(file)
+            return dict_score
+        except: 
+            return None
+
+    def save_score(self, player_name_box, player_score):
+        dict_score = self.load_score()
+        player_name = player_name_box.text
+
+        if not player_name:
+            return False
+
+        if not dict_score:
+            dict_score = dict()
+    
+        score_player = dict_score.get(player_name)
+
+        if not score_player:
+            dict_score[player_name] = player_score
+        
+        elif player_score > score_player:
+            dict_score[player_name] = player_score
+
+        else:
+            pass
+
+        try:
+            score_filepath = os.path.join(st.save_folder, "scores.json")
+            with open(score_filepath, "w") as out_file:
+                json.dump(dict_score, out_file)
+                out_file.close()
+        except:
+            pass
+        
+        else:
+            return True
+
 
     # Método que exibe a tela de game over
     def game_over(self, player_score):
@@ -504,6 +540,7 @@ class Game():
             O estado do game over, que é falsa, pois demarca o fim do ciclo de game over.
 
         """
+        score_saved = False
         self.load_background("space_gameover.jpg")
 
         # Altera o estado da variável que controla o loop de game over
@@ -531,15 +568,17 @@ class Game():
             # Imprime a pontuação do jogador na tela
             self.draw_text(screen, f"Score: {str(player_score)}", 50, x_centered, y_centered - 20, st.WHITE)
 
-            # Imprime um rótulo para a caixa de nome do usuário
-            self.draw_text(screen, "Digite seu nome:", 30, x_centered, y_centered+50, st.WHITE)
+            if not score_saved:
+                # Imprime um rótulo para a caixa de nome do usuário
+                self.draw_text(screen, "Digite seu nome:", 30, x_centered, y_centered+50, st.WHITE)
 
-            # Desenha a caixa de texto para o nome do usuário
-            player_name_box.update()
-            player_name_box.draw(screen)
+                # Desenha a caixa de texto para o nome do usuário
+                player_name_box.update()
+                player_name_box.draw(screen)
 
-            # Desenha os botões da tela de game over
-            save_score_button.draw(screen, (0,0,0))
+                # Desenha os botões da tela de game over
+                save_score_button.draw(screen, (0,0,0))
+
             play_again.draw(screen, (0,0,0))
             back_to_menu.draw(screen, (0,0,0))
 
@@ -567,9 +606,8 @@ class Game():
                     # Caso o usuário clique no botão de play
                     if save_score_button.is_over(pos):
                         # Salva o score do jogador
-                        # COLOCA A SUA FUNCAO AQUI, no lugar do "print()"
-                        
-                        print(player_score)
+                        score_saved = self.save_score(player_name_box, player_score)
+
 
                     # Caso o usuário clique no botão de voltar ao menu
                     elif back_to_menu.is_over(pos):
