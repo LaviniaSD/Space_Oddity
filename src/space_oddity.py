@@ -80,6 +80,74 @@ class Game():
                 scene = self.menu()
             elif scene == "game":
                 scene =  self.run_game()
+            elif scene == "score":
+                scene =  self.scores()
+
+    
+    def scores(self):
+
+        self.load_background("space_menu.jpg")
+
+        # Define referências de posições para os botões, ao centro da tela
+        x_centered = st.WIDTH / 2
+        y_centered = st.HEIGHT / 2
+
+        # Instancia os botões do scores
+        exit_button = it.Button(text="EXIT", x=x_centered, y=y_centered+250, width=200, height=30, font_size=25)
+
+        dict_score = self.load_score()
+        if not dict_score:
+            dict_score = dict()
+        dict_keys_sorted = sorted(dict_score, key = dict_score.get, reverse=True)
+        high_score_list = list()
+        top_places = 5
+
+        for index in range(0, min(len(dict_keys_sorted), top_places)):
+            name = dict_keys_sorted[index]
+            score = dict_score.get(name)
+            high_score_list.append((name, score))
+
+        while True:
+            # Carrega a imagem de fundo do score
+            screen.blit(st.background, (0, 0))
+
+            # Imprime o nome do jogo na tela
+            self.draw_text(screen, "High Scores", 80, x_centered, y_centered-300, st.WHITE)
+
+            y_score = y_centered - 120
+
+            for index in range(0, min(len(high_score_list), top_places)):
+                name = high_score_list[index][0]
+                score = high_score_list[index][1]
+                self.draw_text(screen, f"{name} - {score}", 40, x_centered, y_score, st.WHITE)
+                y_score += 50
+
+            # Desenha os botões na tela
+            exit_button.draw(screen, (0,0,0))
+
+            # Verifica a ocorrência de eventos
+            for event in pygame.event.get():
+                # Recolhe a posição atual do mouse
+                pos = pygame.mouse.get_pos()
+
+                # Caso o usuário feche a janela
+                if event.type == pygame.QUIT:
+                    self.in_menu = False
+                    self.quit_game()
+
+                # Caso o usuário clique com o botão esquerdo do mouse
+                if event.type == pygame.MOUSEBUTTONDOWN:
+                    
+                    # Caso o usuário clique no botão de play
+                    if exit_button.is_over(pos):
+                        self.in_menu = False
+                        return "menu"
+
+                    else:
+                        pass
+                        
+            # Atualiza os conteúdos da tela
+            pygame.display.flip()
 
     # Crie um método para o menu principal
     def menu(self):
@@ -111,7 +179,6 @@ class Game():
         while self.in_menu:
 
             # Carrega a imagem de fundo do menu
-            # screen.fill(st.WHITE)
             screen.blit(st.background, (0, 0))
 
             # Imprime o nome do jogo na tela
@@ -142,8 +209,8 @@ class Game():
         
                     # Caso o usuário clique no botão de scores
                     elif scores_button.is_over(pos):
-                        # changescn("scores")
-                        print("scores")
+                        self.in_menu = False
+                        return "score"
                     
                     # Caso o usuário clique no botão de sair
                     elif exit_button.is_over(pos):
