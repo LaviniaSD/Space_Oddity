@@ -1,22 +1,20 @@
-<h1>Trabalho LP</h1>
+<h1 align="center" >🪐Space Oddity🪐</h1>
+<p align="center">  Status: Concluído 🚀</p>
 
-<h3>Jogo de nave</h3>
+<p>"Space Oddity" é um jogo Shoot 'em Up no estilo arcade. Nele, o jogador controla sua nave através do espaço destruindo asteroides e naves inimigas e durante sua jornada ele poderá encontrar algumas recompensas para ajudá-lo, como escudos que o protegerão e estrelas que o darão a habilidade de tiros duplos, mas esses efeitos não são permanentes, então cuidado! A qualquer momento você poderá colidir com algo que encerará sua jornada.</p>
 
-<h3>Menu:</h3>
+<h3>Índice:</h3>
 
-- [ ] Background
-- [ ] Tratamento de texto (Nome do jogo)
-- [ ] Sound Design & Sound Music (Música de fundo)
-- [ ] Botão Start - inicializa o jogo
-- [ ] Botão Quit - fecha o jogo
-- [ ] Botão Ranking - exibe o ranking atual
-- [ ] How to play
-
-OBS: Todos os botões são derivados de uma classe abstrata de botões, sendo que cada botão deve ter efeito sonoro.
+   * [Sobre o projeto](#sobre)
+   * [Pré Requisitos](#pre-requisitos)
+   * [Como ler esse projeto?](#como-ler)
+   * [Nossa Equipe](#equipe)
 
 
-<h3>Jogo:</h3>
 
+
+<h3 id=sobre>Sobre o projeto:</h3>
+=======
 - [X] Background em movimentação
 - [X] Música de Fundo
 
@@ -66,33 +64,41 @@ OBS: Todos os botões são derivados de uma classe abstrata de botões, sendo qu
 - [ ] Botão Menu - Volta para o menu
 - [ ] Botão Registrar score - Diponível apenas para jogador no top 20. Caso o jogador não esteja no top 20 ele só possui a opção de sair.
 
+  Esse projeto tem por finalidade criar um jogo utilizando a biblioteca pygame com base nos conhecimentos de orientação a objetos.
 
-<h3>Diagrama UML (html):<h3> 
+<h3 id=pre-requisitos>Pré requisitos:</h3>
 
-<h4>3 Diagramas de caso de uso</h4>
+1. : Instalar os requerimentos
+  
 
-- [ ] Pronto?
-
-
-<h4>3 Diagramas de atividade</h4>
-
-- [ ] Pronto?
+<h3 id=como-ler>Como utilizar esse projeto?</h3>
+Para entender e executar esse projeto siga as seguintes instruções:
  
-
-<h4>Diagrama de classes</h4>
-(só das classes que nós elaboramos, exceto se nossa classe extender alguma classe já existente no pygame). 
-
-- [ ]  Pronto?
-
-<h3>Finalizações:</h3>
-
-- [ ] Testes 
-- [ ] Html com manual de uso do jogo
+- [ ] Certifique-se que esse repositório está em sua máquina e o acesse.
 
 
-4 integrantes:
+- [ ] No prompt de comando do seu computador, digite o seguinte código:
 
-* Abner
-* Almir
-* Lavínia
-* Gustavo
+```
+pip install -r requirements.txt
+```
+
+- [ ] Para entender as regras do jogo, acesse o arquivo <b>index</b> na pasta <b>instructions</b> ou acesse o link ...
+- [ ] Para iniciar o jogo, execute o arquivo main.py.
+- [ ] Para visualizar os diagramas UML e de classes utilizados como base do projeto, acesse a pasta <b>Diagrams</b>
+- [ ] Para ler os arquivos que contém as classes e os loops do jogo acesse a pasta <b>src</b>.
+  
+  
+  <h3 id=equipe>Nossa equipe:</h3>
+  
+  * [Abner Lucas](https://github.com/AbPCV)
+  
+  * [Almir Fonseca](https://github.com/AlmirFonseca)
+  
+  * [Lavínia Dias](https://github.com/LaviniaSD)
+   
+  * [Gustavo Campanha](https://github.com/GustavoCampanha)
+    
+  
+  
+<p align="center"> Vista seu capacete e inicie sua jornada!🚀</p>
